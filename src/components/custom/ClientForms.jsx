@@ -8,9 +8,17 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetOverlay,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "../ui/scroll-area";
 import { PlusIcon } from "lucide-react";
 
@@ -110,7 +118,7 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent className="w-[50vw]">
+      <SheetContent className="w-3/5">
         <SheetHeader>
           <SheetTitle>Add Form</SheetTitle>
           <SheetDescription>
@@ -118,21 +126,33 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
             done.
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="max-h-[calc(100vh-150px)] overflow-y-auto">
-          <div className="grid gap-4 py-4">
+        <ScrollArea className="max-h-[calc(100vh-150px)] overflow-y-auto px-2">
+          <div className="grid gap-4 py-4 px-1">
             {/* Company Type */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="companyType" className="text-right">
                 Company Type
               </Label>
-              <Input
-                id="companyType"
-                name="companyType"
-                value={newClient.companyType || ""}
-                onChange={handleChange}
-                placeholder="Customer / Vendor"
-                className="col-span-3"
-              />
+              <RadioGroup
+                defaultValue="customer"
+                className="col-span-3 flex gap-x-10 items-center"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="customer" id="customer" />
+                  <Label htmlFor="customer">Customer</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="vendor" id="vendor" />
+                  <Label htmlFor="vendor">Vendor</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="customer/vendor"
+                    id="customer/vendor"
+                  />
+                  <Label htmlFor="customer/vendor">Customer/Vendor</Label>
+                </div>
+              </RadioGroup>
             </div>
 
             {/* GSTIN */}
@@ -210,14 +230,15 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               <Label htmlFor="registrationType" className="text-right">
                 Registration Type
               </Label>
-              <Input
-                id="registrationType"
-                name="registrationType"
-                value={newClient.registrationType || ""}
-                onChange={handleChange}
-                placeholder="E.g., Unregistered"
-                className="col-span-3"
-              />
+              <Select>
+                <SelectTrigger className="w-full col-span-3">
+                  <SelectValue placeholder="Select Registration Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unregistered">Unregistered</SelectItem>
+                  <SelectItem value="Registered">Registered</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* PAN */}
@@ -236,7 +257,7 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
 
             {/* Billing Address */}
             <hr />
-            <h3>Billing Address</h3>
+            <h3 className="text-lg font-medium pl-6">Billing Address</h3>
             <hr />
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address1" className="text-right">
@@ -330,22 +351,26 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
             </div>
 
             <hr />
-            <h3>Opening Balance</h3>
+            <h3 className="text-lg font-medium pl-6">Opening Balance</h3>
             <hr />
 
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="customerBalance" className="text-right">
                 Customer Balance
               </Label>
-              <Input
-                id="customerBalance"
-                name="customerBalance"
-                type="number"
-                value={newClient.customerBalance || ""}
-                onChange={handleChange}
-                placeholder="Debit or Creadit (Change to radio)"
-                className="col-span-3"
-              />
+              <RadioGroup
+                defaultValue="credit"
+                className="col-span-3 flex gap-x-10 items-center"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="credit" id="credit" />
+                  <Label htmlFor="credit">Credit</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="debit" id="debit" />
+                  <Label htmlFor="debit">Debit</Label>
+                </div>
+              </RadioGroup>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="openingBalance" className="text-right">
@@ -363,40 +388,106 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
 
             <hr />
             <div className="flex justify-between items-center">
-              <span>Shipping Address</span>
+              <span className="text-xl font-medium pl-6">Shipping Address</span>
               <Button>
                 <PlusIcon /> Add
               </Button>
             </div>
             <hr />
 
+            <hr />
+            <h3 className="text-lg font-medium pl-6">Custom Fields</h3>
+            <hr />
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="customFields.licenseNo" className="text-right">
+                License No.
+              </Label>
+              <Input
+                id="customFields.licenseNo"
+                name="customFields.licenseNo"
+                value={newClient.customFields?.licenseNo || ""}
+                onChange={handleChange}
+                placeholder="Enter Licence No."
+                className="col-span-3"
+              />
+            </div>
+
+            <hr />
+            <h3 className="text-lg font-medium pl-6">Additional Details</h3>
+            <hr />
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="additionalDetails.faxNo" className="text-right">
+                Fax No.
+              </Label>
+              <Input
+                id="additionalDetails.faxNo"
+                name="additionalDetails.faxNo"
+                value={newClient.additionalDetails?.faxNo || ""}
+                onChange={handleChange}
+                placeholder="Enter Fax no."
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="additionalDetails.website" className="text-right">
+                Website
+              </Label>
+              <Input
+                id="additionalDetails.website"
+                name="additionalDetails.website"
+                value={newClient.additionalDetails?.website || ""}
+                onChange={handleChange}
+                placeholder="www.sitename.com"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="additionalDetails.dueDays" className="text-right">
+                Due Days
+              </Label>
+              <Input
+                id="additionalDetails.dueDays"
+                name="additionalDetails.dueDays"
+                value={newClient.additionalDetails?.dueDays || ""}
+                onChange={handleChange}
+                placeholder="Enter Due Days"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="additionalDetails.note" className="text-right">
+                Note
+              </Label>
+              <Input
+                id="additionalDetails.note"
+                name="additionalDetails.note"
+                value={newClient.additionalDetails?.note || ""}
+                onChange={handleChange}
+                placeholder="Enter note (Optional)"
+                className="col-span-3"
+              />
+            </div>
             {/* Enable Toggle */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="enable" className="text-right">
                 Enable
               </Label>
-              <Input
-                id="enable"
-                name="enable"
-                type="checkbox"
-                checked={newClient.enable || false}
-                onChange={(e) =>
-                  setNewClient((prev) => ({
-                    ...prev,
-                    enable: e.target.checked,
-                  }))
-                }
-                className="col-span-3"
-              />
+              <span className="col-span-3 flex items-center gap-x-2">
+                <Checkbox id="enable" />
+                <Label htmlFor="enable">
+                  Company will be visible on all document.
+                </Label>
+              </span>
             </div>
           </div>
-
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="submit">Save changes</Button>
-            </SheetClose>
-          </SheetFooter>
         </ScrollArea>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="submit">Save changes</Button>
+          </SheetClose>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
