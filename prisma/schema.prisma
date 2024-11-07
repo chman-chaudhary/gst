@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CustomerVendor {
+  id                  Int               @id @default(autoincrement())
+  companyType         String // Customer | Vendor | Customer / Vendor
+  gstin               String? // GSTIN
+  companyName         String // Company Name
+  contactPerson       String? // Contact Person
+  contactNo           String? // Contact Number
+  email               String? // Email
+  registrationType    String? // Registration Type (e.g., Unregistered)
+  pan                 String? // PAN
+  billingAddress      Address           @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddress     Address?          @relation("ShippingAddress", fields: [addressId], references: [id])
+  distanceForEwayBill Float? // Distance for e-way bill (in km)
+  openingBalance      Balance           @relation(fields: [balanceId], references: [id])
+  customFields        CustomField?      @relation(fields: [customFieldId], references: [id])
+  additionalDetails   AdditionalDetail? @relation(fields: [additionalDetailId], references: [id])
+  enable              Boolean
+  billingAddressId    Int
+  addressId           Int?
+  balanceId           Int
+  customFieldId       Int?
+  additionalDetailId  Int?
+}
+
+model Address {
+  id                      Int              @id @default(autoincrement())
+  address1                String?
+  address2                String?
+  landmark                String?
+  city                    String
+  country                 String           @default("India")
+  state                   String // E.g., Uttar Pradesh
+  pincode                 String?
+  billingCustomerVendors  CustomerVendor[] @relation("BillingAddress")
+  shippingCustomerVendors CustomerVendor[] @relation("ShippingAddress")
+}
+
+model Balance {
+  id              Int              @id @default(autoincrement())
+  customerBalance Float?
+  vendorBalance   Float?
+  balanceType     String // Credit | Debit
+  amount          Float            @default(0)
+  CustomerVendor  CustomerVendor[]
+}
+
+model BankDetail {
+  id                Int     @id @default(autoincrement())
+  bankName          String?
+  bankIfscCode      String?
+  bankAccountNumber String?
+  bankBranchName    String?
+}
+
+model CustomField {
+  id             Int              @id @default(autoincrement())
+  licenseNo      String?
+  CustomerVendor CustomerVendor[]
+}
+
+model AdditionalDetail {
+  id             Int              @id @default(autoincrement())
+  faxNo          String?
+  website        String?
+  dueDays        Int? // Use default from settings or numeric value
+  note           String?
+  CustomerVendor CustomerVendor[]
+}
