@@ -23,8 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "../ui/scroll-area";
 import { useState } from "react";
-import { prisma } from "@/lib/PrismaClient";
-import { AddCustomerVendor } from "@/actions/AddClientVendor";
+import { AddCustomerVendor } from "@/actions/CustomerVendor";
 
 export function ViewForm({ open, setOpen }) {
   return (
@@ -115,16 +114,75 @@ export function EditForm({ open, setOpen }) {
 }
 
 export function AddForm({ open, setOpen }) {
+  const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewClient((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [newClient, setNewClient] = useState({ companyType: "customer" });
+  const [newClient, setNewClient] = useState({
+    companyType: "customer",
+    gstin: "",
+    companyName: "",
+    contactPerson: "",
+    contactNo: "",
+    email: "",
+    registrationType: "",
+    pan: "",
+    address1: "",
+    address2: "",
+    city: "",
+    pincode: "",
+    state: "",
+    country: "",
+    distanceForEwayBill: "",
+    balanceType: "credit",
+    openingBalance: "",
+    licenseNo: "",
+    faxNo: "",
+    website: "",
+    dueDays: "",
+    note: "",
+    enable: true,
+  });
 
-  const handleSubmit = async () => {
-    const response = await AddCustomerVendor(newClient);
-    console.log(response);
+  const validateForm = () => {
+    const newErrors = {};
+    for (const key in newClient) {
+      if (
+        !newClient[key] &&
+        key !== "address2" &&
+        key !== "faxNo" &&
+        key !== "website" &&
+        key !== "dueDays" &&
+        key !== "note" &&
+        key !== "licenseNo"
+      ) {
+        newErrors[key] = `${key} is required`;
+      }
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      alert("Error");
+      return;
+    }
+    try {
+      const data = await AddCustomerVendor(newClient);
+      if (data.success) {
+        alert("Customer/Vendor added successfully!");
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error adding Customer/Vendor:", error);
+    }
   };
 
   return (
@@ -138,7 +196,7 @@ export function AddForm({ open, setOpen }) {
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="max-h-[calc(100vh-150px)] overflow-y-auto px-2">
-          <div className="grid gap-4 py-5 px-1">
+          <div className="grid gap-2 py-5 px-1">
             {/* Company Type */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="companyType" className="text-right">
@@ -171,7 +229,7 @@ export function AddForm({ open, setOpen }) {
             </div>
 
             {/* GSTIN */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="gstin" className="text-right">
                 GSTIN
               </Label>
@@ -182,10 +240,15 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3 uppercase"
               />
+              {errors.gstin && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.gstin}
+                </p>
+              )}
             </div>
 
             {/* Company Name */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="companyName" className="text-right">
                 Company Name
               </Label>
@@ -196,10 +259,15 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.companyName && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.companyName}
+                </p>
+              )}
             </div>
 
             {/* Contact Person */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="contactPerson" className="text-right">
                 Contact Person
               </Label>
@@ -210,10 +278,15 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.contactPerson && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.contactPerson}
+                </p>
+              )}
             </div>
 
             {/* Contact Number */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="contactNo" className="text-right">
                 Contact Number
               </Label>
@@ -224,10 +297,15 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.contactNo && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.contactNo}
+                </p>
+              )}
             </div>
 
             {/* Email */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="email" className="text-right">
                 Email
               </Label>
@@ -238,10 +316,15 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.email && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             {/* Registration Type */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="registrationType" className="text-right">
                 Registration Type
               </Label>
@@ -256,13 +339,18 @@ export function AddForm({ open, setOpen }) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="unregistered">Unregistered</SelectItem>
-                  <SelectItem value="Registered">Registered</SelectItem>
+                  <SelectItem value="registered">Registered</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.registrationType && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.registrationType}
+                </p>
+              )}
             </div>
 
             {/* PAN */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="pan" className="text-right">
                 PAN
               </Label>
@@ -273,13 +361,18 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3 uppercase"
               />
+              {errors.pan && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.pan}
+                </p>
+              )}
             </div>
 
             {/* Billing Address */}
             <hr />
             <h3 className="text-lg font-medium pl-6">Billing Address</h3>
             <hr />
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="address1" className="text-right">
                 Address 1
               </Label>
@@ -290,8 +383,14 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.address1 && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.address1}
+                </p>
+              )}
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="address2" className="text-right">
                 Address 2
               </Label>
@@ -305,7 +404,7 @@ export function AddForm({ open, setOpen }) {
             </div>
 
             {/* More Address Fields */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="city" className="text-right">
                 City
               </Label>
@@ -316,46 +415,69 @@ export function AddForm({ open, setOpen }) {
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.city && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.city}
+                </p>
+              )}
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="pincode" className="text-right">
                 Pin Code
               </Label>
               <Input
-                id="city"
+                id="pincode"
                 name="pincode"
                 value={newClient.pincode || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.pincode && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.pincode}
+                </p>
+              )}
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="state" className="text-right">
                 State
               </Label>
               <Input
-                id="city"
+                id="state"
                 name="state"
                 value={newClient.state || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.state && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.state}
+                </p>
+              )}
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="country" className="text-right">
                 Country
               </Label>
               <Input
-                id="city"
+                id="country"
                 name="country"
                 value={newClient.country || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
+              {errors.country && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.country}
+                </p>
+              )}
             </div>
 
             {/* Distance for E-Way Bill */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="distanceForEwayBill" className="text-right">
                 Distance for E-Way Bill
               </Label>
@@ -368,13 +490,18 @@ export function AddForm({ open, setOpen }) {
                 placeholder="In kilometers"
                 className="col-span-3"
               />
+              {errors.distanceForEwayBill && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.distanceForEwayBill}
+                </p>
+              )}
             </div>
 
             <hr />
             <h3 className="text-lg font-medium pl-6">Opening Balance</h3>
             <hr />
 
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="customerBalance" className="text-right">
                 Customer Balance
               </Label>
@@ -395,8 +522,14 @@ export function AddForm({ open, setOpen }) {
                   <Label htmlFor="debit">Debit</Label>
                 </div>
               </RadioGroup>
+              {errors.balanceType && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.balanceType}
+                </p>
+              )}
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+
+            <div className="grid grid-cols-4 items-center gap-x-4">
               <Label htmlFor="openingBalance" className="text-right">
                 Amount
               </Label>
@@ -408,6 +541,11 @@ export function AddForm({ open, setOpen }) {
                 placeholder="0"
                 className="col-span-3"
               />
+              {errors.openingBalance && (
+                <p className="error text-red-500 text-center col-span-4">
+                  {errors.openingBalance}
+                </p>
+              )}
             </div>
 
             <hr />
