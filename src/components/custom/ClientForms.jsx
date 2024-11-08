@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +22,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "../ui/scroll-area";
-import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { prisma } from "@/lib/PrismaClient";
+import { AddCustomerVendor } from "@/actions/AddClientVendor";
 
 export function ViewForm({ open, setOpen }) {
   return (
@@ -110,10 +114,17 @@ export function EditForm({ open, setOpen }) {
   );
 }
 
-export function AddForm({ open, setOpen, newClient, setNewClient }) {
+export function AddForm({ open, setOpen }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewClient((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const [newClient, setNewClient] = useState({ companyType: "customer" });
+
+  const handleSubmit = async () => {
+    const response = await AddCustomerVendor(newClient);
+    console.log(response);
   };
 
   return (
@@ -127,7 +138,7 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="max-h-[calc(100vh-150px)] overflow-y-auto px-2">
-          <div className="grid gap-4 py-4 px-1">
+          <div className="grid gap-4 py-5 px-1">
             {/* Company Type */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="companyType" className="text-right">
@@ -136,6 +147,10 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               <RadioGroup
                 defaultValue="customer"
                 className="col-span-3 flex gap-x-10 items-center"
+                value={newClient.companyType || "customer"}
+                onValueChange={(value) =>
+                  setNewClient({ ...newClient, companyType: value })
+                }
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="customer" id="customer" />
@@ -165,7 +180,7 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
                 name="gstin"
                 value={newClient.gstin || ""}
                 onChange={handleChange}
-                className="col-span-3"
+                className="col-span-3 uppercase"
               />
             </div>
 
@@ -230,7 +245,12 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               <Label htmlFor="registrationType" className="text-right">
                 Registration Type
               </Label>
-              <Select>
+              <Select
+                value={newClient.registrationType}
+                onValueChange={(value) =>
+                  setNewClient((prev) => ({ ...prev, registrationType: value }))
+                }
+              >
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Select Registration Type" />
                 </SelectTrigger>
@@ -251,7 +271,7 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
                 name="pan"
                 value={newClient.pan || ""}
                 onChange={handleChange}
-                className="col-span-3"
+                className="col-span-3 uppercase"
               />
             </div>
 
@@ -265,8 +285,8 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               </Label>
               <Input
                 id="address1"
-                name="billingAddress.address1"
-                value={newClient.billingAddress?.address1 || ""}
+                name="address1"
+                value={newClient.address1 || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
@@ -277,8 +297,8 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               </Label>
               <Input
                 id="address2"
-                name="billingAddress.address2"
-                value={newClient.billingAddress?.address2 || ""}
+                name="address2"
+                value={newClient.address2 || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
@@ -291,8 +311,8 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               </Label>
               <Input
                 id="city"
-                name="billingAddress.city"
-                value={newClient.billingAddress?.city || ""}
+                name="city"
+                value={newClient.city || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
@@ -303,8 +323,8 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               </Label>
               <Input
                 id="city"
-                name="billingAddress.pincode"
-                value={newClient.billingAddress?.pincode || ""}
+                name="pincode"
+                value={newClient.pincode || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
@@ -315,8 +335,8 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               </Label>
               <Input
                 id="city"
-                name="billingAddress.state"
-                value={newClient.billingAddress?.state || ""}
+                name="state"
+                value={newClient.state || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
@@ -327,8 +347,8 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               </Label>
               <Input
                 id="city"
-                name="billingAddress.country"
-                value={newClient.billingAddress?.country || ""}
+                name="country"
+                value={newClient.country || ""}
                 onChange={handleChange}
                 className="col-span-3"
               />
@@ -361,6 +381,10 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
               <RadioGroup
                 defaultValue="credit"
                 className="col-span-3 flex gap-x-10 items-center"
+                value={newClient.balanceType || "customer"}
+                onValueChange={(value) =>
+                  setNewClient({ ...newClient, balanceType: value })
+                }
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="credit" id="credit" />
@@ -387,29 +411,20 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
             </div>
 
             <hr />
-            <div className="flex justify-between items-center">
-              <span className="text-xl font-medium pl-6">Shipping Address</span>
-              <Button>
-                <PlusIcon /> Add
-              </Button>
-            </div>
-            <hr />
-
-            <hr />
             <h3 className="text-lg font-medium pl-6">Custom Fields</h3>
             <hr />
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="customFields.licenseNo" className="text-right">
+              <Label htmlFor="licenseNo" className="text-right">
                 License No.
               </Label>
               <Input
-                id="customFields.licenseNo"
-                name="customFields.licenseNo"
-                value={newClient.customFields?.licenseNo || ""}
+                id="licenseNo"
+                name="licenseNo"
+                value={newClient.licenseNo || ""}
                 onChange={handleChange}
                 placeholder="Enter Licence No."
-                className="col-span-3"
+                className="col-span-3 uppercase"
               />
             </div>
 
@@ -418,52 +433,52 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
             <hr />
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="additionalDetails.faxNo" className="text-right">
+              <Label htmlFor="faxNo" className="text-right">
                 Fax No.
               </Label>
               <Input
-                id="additionalDetails.faxNo"
-                name="additionalDetails.faxNo"
-                value={newClient.additionalDetails?.faxNo || ""}
+                id="faxNo"
+                name="faxNo"
+                value={newClient.faxNo || ""}
                 onChange={handleChange}
                 placeholder="Enter Fax no."
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="additionalDetails.website" className="text-right">
+              <Label htmlFor="website" className="text-right">
                 Website
               </Label>
               <Input
-                id="additionalDetails.website"
-                name="additionalDetails.website"
-                value={newClient.additionalDetails?.website || ""}
+                id="website"
+                name="website"
+                value={newClient.website || ""}
                 onChange={handleChange}
                 placeholder="www.sitename.com"
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="additionalDetails.dueDays" className="text-right">
+              <Label htmlFor="dueDays" className="text-right">
                 Due Days
               </Label>
               <Input
-                id="additionalDetails.dueDays"
-                name="additionalDetails.dueDays"
-                value={newClient.additionalDetails?.dueDays || ""}
+                id="dueDays"
+                name="dueDays"
+                value={newClient.dueDays || ""}
                 onChange={handleChange}
                 placeholder="Enter Due Days"
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="additionalDetails.note" className="text-right">
+              <Label htmlFor="note" className="text-right">
                 Note
               </Label>
               <Input
-                id="additionalDetails.note"
-                name="additionalDetails.note"
-                value={newClient.additionalDetails?.note || ""}
+                id="note"
+                name="note"
+                value={newClient.note || ""}
                 onChange={handleChange}
                 placeholder="Enter note (Optional)"
                 className="col-span-3"
@@ -475,7 +490,13 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
                 Enable
               </Label>
               <span className="col-span-3 flex items-center gap-x-2">
-                <Checkbox id="enable" />
+                <Checkbox
+                  id="enable"
+                  onCheckedChange={(value) =>
+                    setNewClient({ ...newClient, enable: value })
+                  }
+                  value={newClient.enable}
+                />
                 <Label htmlFor="enable">
                   Company will be visible on all document.
                 </Label>
@@ -485,7 +506,9 @@ export function AddForm({ open, setOpen, newClient, setNewClient }) {
         </ScrollArea>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+            <Button onClick={handleSubmit} className="mt-2">
+              Save changes
+            </Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

@@ -28,7 +28,6 @@ const Clients = () => {
   const [viewForm, setViewForm] = useState(false);
   const [editForm, setEditForm] = useState(false);
   const [addForm, setAddForm] = useState(false);
-  const [newClient, setNewClient] = useState({});
 
   return (
     <div className="px-10 py-5 space-y-5 w-full">
@@ -85,14 +84,7 @@ const Clients = () => {
       </div>
       {viewForm && <ViewForm open={viewForm} setOpen={setViewForm} />}
       {editForm && <EditForm open={editForm} setOpen={setEditForm} />}
-      {addForm && (
-        <AddForm
-          open={addForm}
-          setOpen={setAddForm}
-          setNewClient={setNewClient}
-          newClient={newClient}
-        />
-      )}
+      {addForm && <AddForm open={addForm} setOpen={setAddForm} />}
     </div>
   );
 };

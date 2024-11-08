@@ -17,8 +17,7 @@ model CustomerVendor {
   email               String? // Email
   registrationType    String? // Registration Type (e.g., Unregistered)
   pan                 String? // PAN
-  billingAddress      Address           @relation("BillingAddress", fields: [billingAddressId], references: [id])
-  shippingAddress     Address?          @relation("ShippingAddress", fields: [addressId], references: [id])
+  billingAddress      Address           @relation(fields: [billingAddressId], references: [id])
   distanceForEwayBill Float? // Distance for e-way bill (in km)
   openingBalance      Balance           @relation(fields: [balanceId], references: [id])
   customFields        CustomField?      @relation(fields: [customFieldId], references: [id])
@@ -32,16 +31,15 @@ model CustomerVendor {
 }
 
 model Address {
-  id                      Int              @id @default(autoincrement())
-  address1                String?
-  address2                String?
-  landmark                String?
-  city                    String
-  country                 String           @default("India")
-  state                   String // E.g., Uttar Pradesh
-  pincode                 String?
-  billingCustomerVendors  CustomerVendor[] @relation("BillingAddress")
-  shippingCustomerVendors CustomerVendor[] @relation("ShippingAddress")
+  id                     Int              @id @default(autoincrement())
+  address1               String?
+  address2               String?
+  landmark               String?
+  city                   String
+  country                String           @default("India")
+  state                  String // E.g., Uttar Pradesh
+  pincode                String?
+  billingCustomerVendors CustomerVendor[]
 }
 
 model Balance {
