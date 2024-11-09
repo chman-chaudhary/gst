@@ -98,3 +98,25 @@ export const AddCustomerVendor = async (customerVendorData) => {
     return { success: false, error: "Internal Server Error" };
   }
 };
+
+export const getCustomerVendorById = async (_id) => {
+  try {
+    const response = await customervendor.findById(_id).lean();
+    if (response) {
+      const res = JSON.parse(JSON.stringify(response));
+      return res;
+    }
+    return null;
+  } catch (e) {
+    console.log("Error while getting Customer/Vendor by id");
+    return null;
+  }
+};
+
+export const deleteCustomerVendor = async (_id) => {
+  try {
+    await customervendor.findByIdAndDelete(_id);
+  } catch (e) {
+    console.log("Error while deleting Customer/Vendor");
+  }
+};

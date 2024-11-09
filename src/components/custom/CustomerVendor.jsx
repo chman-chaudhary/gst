@@ -19,17 +19,40 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { PlusIcon } from "lucide-react";
+import { EditIcon, EyeIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useState } from "react";
-import { ViewForm, EditForm, AddForm } from "@/components/custom/ClientForms";
+import { useEffect, useState } from "react";
+import { ViewForm, AddForm, EditForm } from "./ClientForms";
+import { deleteCustomerVendor } from "@/actions/CustomerVendor";
+import axios from "axios";
 
-const CustomerVendor = ({ customerVendors }) => {
+const CustomerVendor = () => {
   const [viewForm, setViewForm] = useState(false);
   const [editForm, setEditForm] = useState(false);
   const [addForm, setAddForm] = useState(false);
+  const [selectedId, SetSelectedId] = useState();
+  const [customerVendors, setCustomersVendors] = useState([]);
 
-  console.log(customerVendors);
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await axios.get("/api/customerVendor");
+      setCustomersVendors(res.data.data);
+    };
+    fetch();
+  }, []);
+
+  const handleDelete = async (id) => {
+    await deleteCustomerVendor(id);
+    setCustomersVendors((prev) => prev.filter((cv) => cv._id !== id));
+  };
+
+  if (!customerVendors) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <h1 className="text-3xl">No data found</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="px-10 py-5 space-y-5 w-full">
@@ -58,7 +81,7 @@ const CustomerVendor = ({ customerVendors }) => {
           <TableBody>
             {customerVendors.map((cv) => {
               return (
-                <TableRow>
+                <TableRow key={cv._id}>
                   <TableCell className="text-center">
                     {cv.companyName}
                   </TableCell>
@@ -80,13 +103,22 @@ const CustomerVendor = ({ customerVendors }) => {
                       <DropdownMenuContent>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => setViewForm(true)}>
-                          View
+                        <DropdownMenuItem
+                          onClick={() => {
+                            SetSelectedId(cv._id);
+                            setViewForm(true);
+                          }}
+                        >
+                          <EyeIcon /> View
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setEditForm(true)}>
-                          Edit
+                        <DropdownMenuItem
+                        // onClick={() => setEditForm(true)}
+                        >
+                          <EditIcon /> Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDelete(cv._id)}>
+                          <Trash2Icon /> Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -96,7 +128,9 @@ const CustomerVendor = ({ customerVendors }) => {
           </TableBody>
         </Table>
       </div>
-      {viewForm && <ViewForm open={viewForm} setOpen={setViewForm} />}
+      {viewForm && (
+        <ViewForm open={viewForm} setOpen={setViewForm} id={selectedId} />
+      )}
       {editForm && <EditForm open={editForm} setOpen={setEditForm} />}
       {addForm && <AddForm open={addForm} setOpen={setAddForm} />}
     </div>
