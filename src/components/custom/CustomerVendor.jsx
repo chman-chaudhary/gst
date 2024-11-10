@@ -33,11 +33,12 @@ const CustomerVendor = () => {
   const [selectedId, SetSelectedId] = useState();
   const [customerVendors, setCustomersVendors] = useState([]);
 
+  const fetch = async () => {
+    const res = await axios.get("/api/customerVendor");
+    setCustomersVendors(res.data.data);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const res = await axios.get("/api/customerVendor");
-      setCustomersVendors(res.data.data);
-    };
     fetch();
   }, []);
 
@@ -132,7 +133,7 @@ const CustomerVendor = () => {
         <ViewForm open={viewForm} setOpen={setViewForm} id={selectedId} />
       )}
       {editForm && <EditForm open={editForm} setOpen={setEditForm} />}
-      {addForm && <AddForm open={addForm} setOpen={setAddForm} />}
+      {addForm && <AddForm open={addForm} setOpen={setAddForm} fetch={fetch} />}
     </div>
   );
 };

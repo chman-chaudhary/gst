@@ -432,8 +432,8 @@ export function EditForm({ open, setOpen }) {
         <SheetHeader>
           <SheetTitle>Add Form</SheetTitle>
           <SheetDescription>
-            Add details to add new Customer/Vendor here. Click save when you're
-            done.
+            Add details to add new Customer/Vendor here. Click save when
+            you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="max-h-[calc(100vh-150px)] max-w-3/5 overflow-y-auto px-2">
@@ -813,7 +813,7 @@ export function EditForm({ open, setOpen }) {
   );
 }
 
-export function AddForm({ open, setOpen }) {
+export function AddForm({ open, setOpen, fetch }) {
   const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -877,6 +877,7 @@ export function AddForm({ open, setOpen }) {
       const data = await AddCustomerVendor(newClient);
       if (data.success) {
         setOpen(false);
+        fetch();
         return;
       } else {
         alert("Error: " + data.error);
@@ -892,8 +893,8 @@ export function AddForm({ open, setOpen }) {
         <SheetHeader>
           <SheetTitle>Add Form</SheetTitle>
           <SheetDescription>
-            Add details to add new Customer/Vendor here. Click save when you're
-            done.
+            Add details to add new Customer/Vendor here. Click save when
+            you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="max-h-[calc(100vh-150px)] overflow-y-auto px-2">
@@ -1235,6 +1236,7 @@ export function AddForm({ open, setOpen }) {
                 Amount
               </Label>
               <Input
+                type="number"
                 id="openingBalance"
                 name="openingBalance"
                 value={newClient.openingBalance || ""}
@@ -1302,6 +1304,7 @@ export function AddForm({ open, setOpen }) {
                 Due Days
               </Label>
               <Input
+                type="number"
                 id="dueDays"
                 name="dueDays"
                 value={newClient.dueDays || ""}
