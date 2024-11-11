@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { ViewForm, AddForm, EditForm } from "./ClientForms";
 import { deleteCustomerVendor } from "@/actions/CustomerVendor";
 import axios from "axios";
+import Link from "next/link";
 
 const CustomerVendor = () => {
   const [viewForm, setViewForm] = useState(false);
@@ -82,48 +83,58 @@ const CustomerVendor = () => {
           <TableBody>
             {customerVendors.map((cv) => {
               return (
-                <TableRow key={cv._id}>
-                  <TableCell className="text-center">
-                    {cv.companyName}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    &#8377; {cv.openingBalance}
-                  </TableCell>
-                  <TableCell className="text-center">{cv.contactNo}</TableCell>
-                  <TableCell className="text-center">
-                    {cv.companyType}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {cv.billingAddress?.state ?? "Uttar Pradesh"}
-                  </TableCell>
-                  <TableCell className="text-center flex justify-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <BsThreeDotsVertical />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => {
-                            SetSelectedId(cv._id);
-                            setViewForm(true);
-                          }}
-                        >
-                          <EyeIcon /> View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                        // onClick={() => setEditForm(true)}
-                        >
-                          <EditIcon /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDelete(cv._id)}>
-                          <Trash2Icon /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
+                <Link
+                  legacyBehavior
+                  key={cv._id}
+                  href={`/dashboard/customerVendor/view/${cv._id}`}
+                >
+                  <TableRow>
+                    <TableCell className="text-center">
+                      {cv.companyName}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      &#8377; {cv.openingBalance}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {cv.contactNo}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {cv.companyType}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {cv.billingAddress?.state ?? "Uttar Pradesh"}
+                    </TableCell>
+                    <TableCell className="text-center flex justify-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <BsThreeDotsVertical />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => {
+                              SetSelectedId(cv._id);
+                              setViewForm(true);
+                            }}
+                          >
+                            <EyeIcon /> View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                          // onClick={() => setEditForm(true)}
+                          >
+                            <EditIcon /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(cv._id)}
+                          >
+                            <Trash2Icon /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                </Link>
               );
             })}
           </TableBody>
