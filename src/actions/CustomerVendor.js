@@ -1,7 +1,18 @@
 "use server";
 
-import dbConnect from "@/lib/dbConnect"; // Ensure you have a reusable db connection setup
+import dbConnect from "@/lib/dbConnect";
 import customervendor from "@/lib/models/CustomerVendor";
+
+export const getCustomerVendors = async () => {
+  await dbConnect();
+  try {
+    const response = await customervendor.find();
+    return response;
+  } catch (e) {
+    console.log("Error while getting Customer/Vendor", e);
+    return null;
+  }
+};
 
 export const AddCustomerVendor = async (customerVendorData) => {
   await dbConnect();
@@ -100,6 +111,7 @@ export const AddCustomerVendor = async (customerVendorData) => {
 };
 
 export const getCustomerVendorById = async (_id) => {
+  await dbConnect();
   try {
     const response = await customervendor.findById(_id).lean();
     if (response) {
@@ -114,9 +126,13 @@ export const getCustomerVendorById = async (_id) => {
 };
 
 export const deleteCustomerVendor = async (_id) => {
+  await dbConnect();
   try {
-    await customervendor.findByIdAndDelete(_id);
+    const res = await customervendor.findByIdAndDelete(_id);
+    if (res) return true;
+    return false;
   } catch (e) {
     console.log("Error while deleting Customer/Vendor");
+    return false;
   }
 };

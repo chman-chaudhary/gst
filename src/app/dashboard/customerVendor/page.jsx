@@ -1,4 +1,4 @@
-import CustomerVendor from "@/components/custom/CustomerVendor";
+import CustomerVendor from "@/components/custom/CustomerVendor/CustomerVendor";
 
 const Clients = () => {
   return <CustomerVendor />;
