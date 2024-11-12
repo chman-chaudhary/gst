@@ -1,7 +1,4 @@
-import { PlusIcon } from "lucide-react";
-import Link from "next/link";
-import { Button } from "../../ui/button";
-import { getCustomerVendors } from "@/actions/CustomerVendor";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,43 +8,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 
-const CustomerVendor = async () => {
-  const customerVendors = await getCustomerVendors();
-
-  if (!customerVendors) {
-    return (
-      <div className="h-screen flex justify-center items-center">
-        <h1 className="text-3xl">No data found</h1>
-      </div>
-    );
-  }
-
+const ProductList = () => {
+  const productList = [];
   return (
-    <div className="px-8 space-y-5 w-full">
+    <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
-        <span className="text-xl font-medium">Customer / Vendor</span>
-        <Link href={"/dashboard/customer-vendor/add"}>
+        <span className="text-2xl font-semibold">Product List</span>
+        <Link href={"/dashboard/product-list/add"}>
           <Button>
             <PlusIcon /> Add New
           </Button>
         </Link>
       </div>
-      <hr />
       <div className="pt-5">
         <Table className="text-base">
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of your recent products.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">Name</TableHead>
-              <TableHead className="text-center">Outstanding Amount</TableHead>
-              <TableHead className="text-center">Phone</TableHead>
-              <TableHead className="text-center">Type</TableHead>
-              <TableHead className="text-center">State</TableHead>
+              <TableHead className="text-center">Product Group</TableHead>
+              <TableHead className="text-center">Purchase Price</TableHead>
+              <TableHead className="text-center">Sell Price</TableHead>
+              <TableHead className="text-center">HSN Code</TableHead>
+              <TableHead className="text-center">UOM</TableHead>
+              <TableHead className="text-center">Current Stock</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customerVendors.map((cv) => {
+            {productList.map((cv) => {
               return (
                 <Link
                   legacyBehavior
@@ -86,4 +77,4 @@ const CustomerVendor = async () => {
   );
 };
 
-export default CustomerVendor;
+export default ProductList;

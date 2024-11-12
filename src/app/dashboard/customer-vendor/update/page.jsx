@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 
 const Page = () => {
-  redirect("/dashboard/customerVendor");
+  redirect("/dashboard/customer-vendor");
 
   return (
     <div className="flex justify-center items-center h-[calc(100vh-150px)]">

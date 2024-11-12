@@ -13,12 +13,12 @@ const Page = async ({ params }) => {
   const customerVendor = await getCustomerVendorById(id[0]);
 
   if (!customerVendor) {
-    redirect("/dashboard/customerVendor");
+    redirect("/dashboard/customer-vendor");
     return <></>;
   }
 
   return (
-    <div className="flex justify-center w-screen">
+    <div className="flex justify-center w-full">
       <div className="px-10 pt-4 pb-10 space-y-10 max-w-[800px] w-full">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-semibold">View Cutomer/Vendor Details</h1>
@@ -57,7 +57,7 @@ const Page = async ({ params }) => {
           }
         })}
         <Link
-          href="/dashboard/customerVendor"
+          href="/dashboard/customer-vendor"
           className="flex justify-end items-center"
         >
           <Button>

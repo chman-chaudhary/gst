@@ -56,7 +56,7 @@ const Page = () => {
     try {
       const data = await AddCustomerVendor(newClient);
       if (data.success) {
-        router.push("/dashboard/customerVendor");
+        router.push("/dashboard/customer-vendor");
       } else {
         alert("Error: " + data.error);
       }
@@ -66,7 +66,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center w-screen">
+    <div className="flex justify-center w-full">
       <div className="px-10 pt-4 pb-10 space-y-10 max-w-[800px] w-full">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-semibold">Add New Cutomer/Vendor</h1>
