@@ -15,11 +15,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 const FormSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  email: z.string().email({
+    message: "Please provide valid email.",
   }),
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
@@ -27,18 +37,19 @@ const FormSchema = z.object({
 });
 
 export default function FormPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
   const onSubmit = async (data) => {
-    console.log("Submitting form", data);
-
-    const { username: email, password } = data;
+    const { email, password } = data;
 
     try {
       const response = await fetch("/api/auth/register", {
@@ -51,47 +62,83 @@ export default function FormPage() {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      // Process response here
-      console.log("Registration Successful", response);
+
+      toast({
+        title: "User registered successfully.",
+        description: "You'll be redirected to Login page",
+      });
+      router.push("/login");
       //   toast({ title: "Registration Successful" });
     } catch (error) {
       console.error("Registration Failed:", error);
       //   toast({ title: "Registration Failed", description: error.message });
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     }
   };
 
   return (
-    <Form {...form} className="w-2/3 space-y-6">
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="Username" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Password" {...field} type="password" />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-center text-3xl">Sign up to GST</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form} className="w-2/3">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="px-8 py-4 space-y-5"
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="youremail@domain.com"
+                      className="text-base"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base">Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Password"
+                      className="text-base"
+                      {...field}
+                      type="password"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="mt-5 w-full">
+              Sign Up
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter>
+        <CardDescription className="flex justify-center w-full gap-x-1">
+          Already have an account?
+          <Link href={"/login"} className="text-primary hover:underline">
+            Login
+          </Link>
+        </CardDescription>
+      </CardFooter>
+    </Card>
   );
 }
