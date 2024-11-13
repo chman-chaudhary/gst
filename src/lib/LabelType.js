@@ -30,3 +30,23 @@ export const LableType = {
   vendor: "Vendor",
   "customer/vendor": "Customer/Vendor",
 };
+
+export const UnitOfMeasurement = [
+  "kg",
+  "g",
+  "ltr",
+  "ml",
+  "m",
+  "cm",
+  "mm",
+  "sq.m",
+  "sq.ft",
+  "ft",
+  "in",
+  "pcs",
+  "box",
+  "set",
+  "carton",
+  "dozen",
+  "bag",
+];

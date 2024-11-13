@@ -11,9 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getServerSession } from "next-auth";
 
 const CustomerVendor = async () => {
-  const customerVendors = await getCustomerVendors();
+  const session = await getServerSession();
+  const customerVendors = await getCustomerVendors(session.user.email);
 
   if (!customerVendors) {
     return (

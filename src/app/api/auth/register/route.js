@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
-import user from "@/lib/models/User";
+import User from "@/lib/models/User";
 import { hash } from "bcrypt";
 import { NextResponse } from "next/server";
 
@@ -12,14 +12,14 @@ export async function POST(request) {
       return new NextResponse({ message: "Missing Email or Password" });
     }
 
-    const existedUser = await user.findOne({ email });
+    const existedUser = await User.findOne({ email });
     if (existedUser) {
       return new NextResponse({ message: "Email already exists" });
     }
 
     const hashedPassword = await hash(password, 10);
 
-    const newUser = new user({ email, password: hashedPassword });
+    const newUser = new User({ email, password: hashedPassword });
     await newUser.save();
     return new NextResponse.json({
       message: "User register successfully",

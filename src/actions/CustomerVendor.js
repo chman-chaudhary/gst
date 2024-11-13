@@ -1,12 +1,20 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import customervendor from "@/lib/models/CustomerVendor";
+import CustomerVendor from "@/lib/models/CustomerVendor";
+import User from "@/lib/models/User";
 
-export const getCustomerVendors = async () => {
+export const getCustomerVendors = async (userEmail) => {
   await dbConnect();
   try {
-    const response = await customervendor.find();
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
+    const response = await CustomerVendor.find({ user: user._id });
     return response;
   } catch (e) {
     console.log("Error while getting Customer/Vendor", e);
@@ -14,10 +22,17 @@ export const getCustomerVendors = async () => {
   }
 };
 
-export const AddCustomerVendor = async (customerVendorData) => {
+export const AddCustomerVendor = async (customerVendorData, userEmail) => {
   await dbConnect();
 
   try {
+    const user = await User.findOne({ userEmail });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
     const {
       companyType,
       gstin,
@@ -77,7 +92,7 @@ export const AddCustomerVendor = async (customerVendorData) => {
     };
 
     // Create a new CustomerVendor document
-    const newCustomerVendor = new customervendor({
+    const newCustomerVendor = new CustomerVendor({
       companyType,
       gstin,
       companyName,
@@ -96,6 +111,7 @@ export const AddCustomerVendor = async (customerVendorData) => {
       dueDays,
       note,
       enable,
+      user: user._id,
     });
 
     await newCustomerVendor.save();
@@ -113,7 +129,7 @@ export const AddCustomerVendor = async (customerVendorData) => {
 export const getCustomerVendorById = async (_id) => {
   await dbConnect();
   try {
-    const response = await customervendor.findById(_id).lean();
+    const response = await CustomerVendor.findById(_id).lean();
     if (response) {
       const res = JSON.parse(JSON.stringify(response));
       return res;
@@ -128,7 +144,7 @@ export const getCustomerVendorById = async (_id) => {
 export const deleteCustomerVendor = async (_id) => {
   await dbConnect();
   try {
-    const res = await customervendor.findByIdAndDelete(_id);
+    const res = await CustomerVendor.findByIdAndDelete(_id);
     if (res) return true;
     return false;
   } catch (e) {

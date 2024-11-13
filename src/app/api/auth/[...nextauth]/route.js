@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
-import user from "@/lib/models/User";
+import User from "@/lib/models/User";
 import { compare } from "bcrypt";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -23,7 +23,7 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         await dbConnect();
-        const existedUser = await user.findOne({ email: credentials?.email });
+        const existedUser = await User.findOne({ email: credentials?.email });
 
         if (!existedUser) {
           throw new Error("Invalid email or password");

@@ -9,7 +9,7 @@ const layout = ({ children }) => {
       <SidebarProvider>
         <DashboardSidebar />
         <main className="pt-14 w-full">
-          <SidebarTrigger />
+          <SidebarTrigger className="fixed" />
           {children}
         </main>
       </SidebarProvider>

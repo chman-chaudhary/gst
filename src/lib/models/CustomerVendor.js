@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import mongoose, { Schema, model, models } from "mongoose";
 
 const CustomerVendorSchema = new Schema({
   companyType: {
@@ -86,9 +86,14 @@ const CustomerVendorSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
-const customervendor =
-  models.customervendor || model("customervendor", CustomerVendorSchema);
+const CustomerVendor =
+  models.CustomerVendor || model("CustomerVendor", CustomerVendorSchema);
 
-export default customervendor;
+export default CustomerVendor;

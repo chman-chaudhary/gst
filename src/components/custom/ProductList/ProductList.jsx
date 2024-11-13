@@ -17,7 +17,7 @@ const ProductList = () => {
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
         <span className="text-2xl font-semibold">Product List</span>
-        <Link href={"/dashboard/product-list/add"}>
+        <Link href={"/dashboard/product-services/add"}>
           <Button>
             <PlusIcon /> Add New
           </Button>
