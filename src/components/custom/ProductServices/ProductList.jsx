@@ -11,8 +11,7 @@ import {
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
-const ProductList = () => {
-  const productList = [];
+const ProductList = ({ productList }) => {
   return (
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
@@ -38,33 +37,35 @@ const ProductList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {productList.map((cv) => {
+            {productList.map((product) => {
               return (
                 <Link
                   legacyBehavior
-                  key={cv._id}
-                  href={`/dashboard/customer-vendor/view/${cv._id}`}
+                  key={product._id}
+                  href={`/dashboard/product-services/${product._id}`}
                   className="cursor-pointer"
                 >
                   <TableRow>
                     <TableCell className="text-center">
-                      {cv.companyName}
+                      {product.name}
                     </TableCell>
                     <TableCell className="text-center">
-                      &#8377; {cv.openingBalance}
+                      {product.productGroup.name}
                     </TableCell>
                     <TableCell className="text-center">
-                      {cv.contactNo}
+                      &#8377; {product.purchasePriceInclTax}
                     </TableCell>
                     <TableCell className="text-center">
-                      {cv.companyType === "customer"
-                        ? "Customer"
-                        : cv.companyType === "vendor"
-                        ? "Vendor"
-                        : "Customer/Vendor"}
+                      &#8377; {product.sellPriceInclTax}
                     </TableCell>
                     <TableCell className="text-center">
-                      {cv.billingAddress?.state ?? "Uttar Pradesh"}
+                      {product.hsnSacCode}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {product.unitOfMeasurement}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {product.availableQty}
                     </TableCell>
                   </TableRow>
                 </Link>

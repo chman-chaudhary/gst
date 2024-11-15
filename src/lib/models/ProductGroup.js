@@ -1,17 +1,18 @@
-import { Schema, model, models } from "mongoose";
+import mongoose from "mongoose";
 
-const ProductGroupSchema = new Schema({
+export const ProductGroupSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
   createdBy: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
 });
 
 const ProductGroup =
-  models.ProductGroup || model("ProductGroup", ProductGroupSchema);
+  mongoose.models.ProductGroup ||
+  mongoose.model("ProductGroup", ProductGroupSchema);
 
 export default ProductGroup;

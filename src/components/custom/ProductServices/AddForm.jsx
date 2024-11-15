@@ -15,24 +15,58 @@ import { Textarea } from "@/components/ui/textarea";
 import { UnitOfMeasurement } from "@/lib/LabelType";
 import { useState, useEffect } from "react";
 import { AlertAddBox } from "../AlertBox";
-import { AddProductGroup, GetProductGroups } from "@/actions/ProductGroup";
+import { GetProductGroups } from "@/actions/ProductGroup";
 import { useSession } from "next-auth/react";
 import { PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { AddProductService } from "@/actions/ProductService";
 
 const AddForm = () => {
   const session = useSession();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  if (!session.data) {
+    router.push("/login");
+  }
+
   const [openAlert, setOpenAlert] = useState(false);
   const [newProductGroup, setNewProductGroup] = useState("");
   const [isNewProductGroup, setIsNewProductGroup] = useState(false);
   const [productGroups, setProductGroups] = useState([]);
 
+  const handleCreateNewProductGroup = async () => {
+    if (!newProductGroup.trim() || !session || !session.data) {
+      return;
+    }
+    try {
+      const response = await axios.post("/api/product-services/add", {
+        name: newProductGroup,
+        userEmail: session.data.user.email,
+      });
+      console.log("Response:", response);
+
+      if (!response.data) {
+        throw new Error("Failed to create product group");
+      }
+      setProductGroups([...productGroups, response.data.data]);
+      setNewProductGroup("");
+      setIsNewProductGroup(false);
+    } catch (error) {
+      alert("Error creating product group: " + error.message);
+    }
+  };
+
   useEffect(() => {
-    const fetchProductGroups = async () => {
-      const productGroups = await GetProductGroups(session.data.user.email);
-      setProductGroups(productGroups);
+    const fetchProductGroup = async () => {
+      const response = await GetProductGroups(session.data.user.email);
+      console.log("Product Group:", response);
+      setProductGroups(response);
     };
-    fetchProductGroups();
-  }, [newProductGroup]);
+    fetchProductGroup();
+  }, []);
 
   // Initial form state
   const [formData, setFormData] = useState({
@@ -113,39 +147,43 @@ const AddForm = () => {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
-    console.log(formData);
-  };
-
-  const handleCreateNewProductGroup = async () => {
-    if (!newProductGroup.trim()) {
-      return; // Do not send empty names
-    }
-
-    try {
-      const response = await AddProductGroup(
-        newProductGroup,
+  const handleSubmit = async () => {
+    if (session.data) {
+      const response = await AddProductService(
+        formData,
         session.data.user.email
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to create product group");
+      if (response.ok) {
+        toast({
+          title: "Product/Service added successfully",
+          description: "You'll be redirected to Product/Services page.",
+        });
+      } else {
+        toast({
+          title: "Error while adding product/service",
+          description: "Try after some time.",
+          variant: "destructive",
+        });
       }
-
-      setProductGroups([...productGroups, response.name]);
-    } catch (error) {
-      alert("Error creating product group: " + error.message);
+      router.push("/dashboard/product-services");
+    } else {
+      toast({
+        title: "Login to add product/service",
+        description: "You'll be redirected to Login Page",
+        variant: "destructive",
+      });
+      router.push("/login");
     }
   };
 
   return (
     <>
       <form
+        className="space-y-6"
         onSubmit={(e) => {
           e.preventDefault();
           setOpenAlert(true);
         }}
-        className="space-y-6"
       >
         {/* Item Type */}
         <div>
@@ -381,6 +419,8 @@ const AddForm = () => {
             </SelectContent>
           </Select>
         </div>
+
+        {/* New Product Group */}
         {isNewProductGroup && (
           <div className="mt-2">
             <Input
@@ -390,11 +430,7 @@ const AddForm = () => {
               placeholder="Enter new product group name"
               className="w-full"
             />
-            <Button
-              type="button"
-              onClick={handleCreateNewProductGroup}
-              className="mt-2"
-            >
+            <Button onClick={handleCreateNewProductGroup} className="mt-2">
               Create Product Group
             </Button>
           </div>

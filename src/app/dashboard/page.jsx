@@ -8,8 +8,8 @@ const Dashboard = async () => {
   }
 
   return (
-    <div className="px-8">
-      <h1 className="text-lg">Dashboard Page</h1>
+    <div className="px-10 py-5 space-y-5 w-full">
+      <h1 className="text-2xl font-semibold">Dashboard Page</h1>
     </div>
   );
 };

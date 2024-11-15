@@ -1,4 +1,4 @@
-import AddForm from "@/components/custom/ProductList/AddForm";
+import AddForm from "@/components/custom/ProductServices/AddForm";
 
 const Page = () => {
   return (

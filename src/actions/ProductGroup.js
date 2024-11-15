@@ -5,9 +5,9 @@ import ProductGroup from "@/lib/models/ProductGroup";
 import User from "@/lib/models/User";
 
 export const AddProductGroup = async (name, userEmail) => {
-  try {
-    await dbConnect();
+  await dbConnect();
 
+  try {
     const user = await User.findOne({ email: userEmail });
 
     if (!user) {
