@@ -45,7 +45,7 @@ const items = [
   },
   {
     title: "Sales Invoice",
-    url: "#",
+    url: "/dashboard/sale-invoice",
     icon: Scroll,
   },
   {
