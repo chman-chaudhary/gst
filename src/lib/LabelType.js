@@ -1,4 +1,4 @@
-export const LableType = {
+export const CustomerVendorLabel = {
   companyType: "Company Type",
   gstin: "GST No",
   companyName: "Company Name",
@@ -50,3 +50,23 @@ export const UnitOfMeasurement = [
   "dozen",
   "bag",
 ];
+
+export const ProductServicesLabel = {
+  availableQty: "Stock",
+  barcodeOrSerialNo: "Barcode",
+  discount: "Discount",
+  enable: "Show Product/Service",
+  hsnSacCode: "HSN Code",
+  itemType: "Item Type",
+  name: "Name",
+  noItc: "No ITC (Ineligible for Input Tax Credit)",
+  nonSalableProduct: "Non-Salable Product",
+  normalBatchSerialNo: "Batch Series No",
+  productDescription: "Product Description",
+  productGroup: "Product Group",
+  purchasePrice: "Purchase Price",
+  purchasePriceInclTax: "Purchase Price (Including Tax)",
+  sellPrice: "Selling Price",
+  sellPriceInclTax: "Selling Price (Including Tax)",
+  unitOfMeasurement: "Unit of Measurement",
+};

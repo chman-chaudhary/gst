@@ -1,18 +1,20 @@
-import { getCustomerVendorById } from "@/actions/CustomerVendor";
-import DeleteButton from "@/components/custom/CustomerVendor/DeleteButton";
+import { GetProductServiceById } from "@/actions/ProductService";
 import { InputField } from "@/components/custom/InputFeild";
+import DeleteButton from "@/components/custom/ProductServices/DeleteButton";
 import { Button } from "@/components/ui/button";
-import { CustomerVendorLabel } from "@/lib/LabelType";
+import { ProductServicesLabel } from "@/lib/LabelType";
 import { ArrowLeftIcon, EditIcon } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const Page = async ({ params }) => {
+  const session = await getServerSession();
   const { id } = await params;
-  const customerVendor = await getCustomerVendorById(id[0]);
+  const productService = await GetProductServiceById(id[0], session.user.email);
 
-  if (!customerVendor) {
-    redirect("/dashboard/customer-vendor");
+  if (!productService) {
+    redirect("/dashboard/product-services");
     return <></>;
   }
 
@@ -20,28 +22,35 @@ const Page = async ({ params }) => {
     <div className="flex justify-center w-full">
       <div className="px-10 pt-4 pb-10 space-y-10 max-w-[800px] w-full">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">View Cutomer/Vendor Details</h1>
+          <h1 className="text-xl font-semibold">
+            View Product/Services Details
+          </h1>
           <span className="flex items-center gap-x-2">
             <EditIcon />
             <DeleteButton id={id[0]} />
           </span>
         </div>
-        {Object.entries(customerVendor).map(([key, value]) => {
+        {Object.entries(productService).map(([key, value]) => {
           if (typeof value === "object" && value !== null) {
             return (
               <div key={key} className="space-y-5">
                 <h3 className="text-lg font-semibold mb-3">
-                  {CustomerVendorLabel[key]}
+                  {ProductServicesLabel[key]}
                 </h3>
                 <hr />
                 {Object.entries(value).map(([subKey, subValue]) => {
-                  if (subValue) {
+                  if (
+                    subValue &&
+                    subKey !== "_id" &&
+                    subKey !== "__v" &&
+                    subKey !== "createdBy"
+                  ) {
                     return (
                       <InputField
                         key={subKey}
                         label={subKey}
                         value={subValue}
-                        LabelType={CustomerVendorLabel}
+                        LabelType={ProductServicesLabel}
                       />
                     );
                   }
@@ -52,6 +61,9 @@ const Page = async ({ params }) => {
           } else if (
             key !== "_id" &&
             key !== "__v" &&
+            key !== "createdBy" &&
+            key !== "createdAt" &&
+            key !== "updatedAt" &&
             value &&
             key !== "enable"
           ) {
@@ -60,13 +72,13 @@ const Page = async ({ params }) => {
                 key={key}
                 label={key}
                 value={value}
-                LabelType={CustomerVendorLabel}
+                LabelType={ProductServicesLabel}
               />
             );
           }
         })}
         <Link
-          href="/dashboard/customer-vendor"
+          href="/dashboard/product-services"
           className="flex justify-end items-center"
         >
           <Button>

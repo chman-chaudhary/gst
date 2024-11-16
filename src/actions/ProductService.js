@@ -48,7 +48,8 @@ export const DeleteProductService = async (id) => {
   await dbConnect();
   try {
     const response = await ProductService.findByIdAndDelete(id);
-    return response;
+    if (response) return true;
+    return false;
   } catch (e) {
     console.log(e);
     return null;
@@ -63,12 +64,17 @@ export const GetProductServiceById = async (id, userEmail) => {
       console.log("User not found");
       return null;
     }
-    const productService = await ProductService.findById(id);
-    if (!productService) {
-      console.log("Product service not found");
-      return null;
+    if (!mongoose.models.ProductGroup) {
+      mongoose.model("ProductGroup", ProductGroupSchema);
     }
-    return productService;
+    const productService = await ProductService.findById(id)
+      .populate("productGroup")
+      .lean();
+    if (productService) {
+      const response = JSON.parse(JSON.stringify(productService));
+      return response;
+    }
+    return null;
   } catch (e) {
     console.log("Error while fetching product service by id", e);
     return null;
