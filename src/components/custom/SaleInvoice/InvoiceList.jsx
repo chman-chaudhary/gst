@@ -31,6 +31,7 @@ export const InvoiceList = ({ invoices }) => {
               <Link
                 href={`/dashboard/sale-invoice/view/${invoice._id}`}
                 key={index}
+                className="cursor-pointer"
                 legacyBehavior
               >
                 <TableRow>

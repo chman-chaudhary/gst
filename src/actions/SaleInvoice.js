@@ -50,38 +50,21 @@ export const GetSaleInvoices = async (userEmail) => {
 };
 
 // Get Sale Invoice By Id
-export const getSaleInvoiceById = async (req, res) => {
+export const getSaleInvoiceById = async (id) => {
+  await dbConnect();
   try {
-    const { id } = req.params;
-
-    // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid invoice ID format",
-      });
-    }
-
     // Find invoice
     const invoice = await Invoice.findById(id);
-
     if (!invoice) {
-      return res.status(404).json({
-        success: false,
-        message: "Invoice not found",
-      });
+      return { ok: false, message: "Invoice not found" };
     }
-
-    res.status(200).json({
-      success: true,
-      data: invoice,
-    });
+    return {
+      ok: true,
+      invoice,
+    };
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error fetching invoice",
-      error: error.message,
-    });
+    console.log(error);
+    return { ok: false, message: "Invoice not found" };
   }
 };
 
