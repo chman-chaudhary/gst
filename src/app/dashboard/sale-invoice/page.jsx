@@ -1,8 +1,19 @@
+import { GetSaleInvoices } from "@/actions/SaleInvoice";
+import { InvoiceList } from "@/components/custom/SaleInvoice/InvoiceList";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { PlusIcon } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-const Page = () => {
+const Page = async () => {
+  const session = await getServerSession();
+  if (!session) {
+    redirect("/login");
+  }
+  const { invoices } = await GetSaleInvoices(session.user.email);
+
   return (
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
@@ -14,6 +25,7 @@ const Page = () => {
         </Link>
       </div>
       <hr />
+      <InvoiceList invoices={invoices || []} />
     </div>
   );
 };

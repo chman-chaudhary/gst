@@ -42,7 +42,7 @@ const AddForm = () => {
       return;
     }
     try {
-      const response = await axios.post("/api/product-services/add", {
+      const response = await axios.post("/api/productgroup/add", {
         name: newProductGroup,
         userEmail: session.data.user.email,
       });

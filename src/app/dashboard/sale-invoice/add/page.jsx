@@ -1,379 +1,7 @@
 "use client";
 
-// import RedStar from "@/components/custom/RedStart";
-// import { Button } from "@/components/ui/button";
-// import { Calendar } from "@/components/ui/calendar";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Separator } from "@/components/ui/separator";
-// import { Switch } from "@/components/ui/switch";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableFooter,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// import { Textarea } from "@/components/ui/textarea";
-// import { cn } from "@/lib/utils";
-// import {
-//   CalendarIcon,
-//   FileIcon,
-//   PlusIcon,
-//   PrinterIcon,
-//   Trash2,
-// } from "lucide-react";
-// import Link from "next/link";
-// import { IconLeft } from "react-day-picker";
-
-// const Page = () => {
-//   return (
-//     <div className="px-10 py-5 space-y-5 w-full">
-//       <div className="flex justify-center items-center">
-//         <span className="text-2xl font-semibold">Create Sale Invoice</span>
-//       </div>
-//       <hr />
-//       <div>
-//         <div className="block lg:flex gap-4">
-//           <Card className="w-full lg:w-2/5 mb-5">
-//             <CardContent className="p-3 space-y-5">
-//               <div className="flex justify-between items-end h-8">
-//                 <span>Customer Information</span>
-//                 <Button size="sm">
-//                   <PlusIcon /> Add Customer
-//                 </Button>
-//               </div>
-//               <Separator />
-//               <div className="grid grid-cols-3 gap-3">
-//                 <Label className="col-span-1">
-//                   M/S.
-//                   <RedStar />
-//                 </Label>
-//                 <Select>
-//                   <SelectTrigger className="col-span-2">
-//                     <SelectValue placeholder="Select Customer" />
-//                   </SelectTrigger>
-//                   <SelectContent></SelectContent>
-//                 </Select>
-//               </div>
-//               <InputFeild label={"Address"} type="textarea" required={true} />
-//               <InputFeild label={"Contact Person"} required={true} />
-//               <InputFeild label={"Phone"} required={true} />
-//               <InputFeild label={"GST/PAN"} required={true} />
-//               <InputFeild label={"Rev. Charge"} required={true} />
-//               <InputFeild label={"Place of Supply"} required={true} />
-//             </CardContent>
-//           </Card>
-//           <Card className="w-full lg:w-3/5 mb-5">
-//             <CardContent className="p-3 space-y-5">
-//               <div className="flex justify-between items-end h-8">
-//                 <span>Invoice Details</span>
-//               </div>
-//               <Separator />
-//               <div className="grid grid-cols-3 gap-3">
-//                 <Label>
-//                   Invoice Type
-//                   <RedStar />
-//                 </Label>
-//                 <Select>
-//                   <SelectTrigger className="col-span-2">
-//                     <SelectValue placeholder="Select Invoice Type" />
-//                   </SelectTrigger>
-//                   <SelectContent></SelectContent>
-//                 </Select>
-//               </div>
-//               <InputFeild label={"Invoice No."} required={true} />
-//               <Separator className="my-2" />
-//               <InputFeild label={"Challan No."} />
-//               <InputFeild label={"Challan Date"} type="date" />
-//               <InputFeild label={"P.O. No."} />
-//               <InputFeild label={"P.O. Data"} type="date" />
-//               <InputFeild label={"L.R. No."} />
-//               <InputFeild label={"L.R. Date"} type="date" />
-//               <Separator className="my-2" />
-//               <div className="grid grid-cols-3 gap-3">
-//                 <Label className="col-span-1">
-//                   Delivery
-//                   <RedStar />
-//                 </Label>
-//                 <Select>
-//                   <SelectTrigger className="col-span-2">
-//                     <SelectValue placeholder="Select Delivery Mode" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="hand">Hand Delivery</SelectItem>
-//                     <SelectItem value="road-regular">
-//                       Transport/Road - Regular
-//                     </SelectItem>
-//                     <SelectItem value="road-cargo">
-//                       Road - Over Dimensional Cargo
-//                     </SelectItem>
-//                     <SelectItem value="rail">Rail</SelectItem>
-//                     <SelectItem value="air">Air</SelectItem>
-//                     <SelectItem value="ship">Ship</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//             </CardContent>
-//           </Card>
-//         </div>
-
-//         <Card className="space-y-8">
-//           {/* Header */}
-//           <div className="flex justify-between items-center p-3">
-//             <span className="text-lg font-semibold">Product Items</span>
-//             <span className="flex items-center gap-x-3">
-//               <Link href={"/dashboard/product-services/add"}>
-//                 <Button size="sm">
-//                   <PlusIcon />
-//                   Add Product
-//                 </Button>
-//               </Link>
-//               <Button size="sm">
-//                 <PlusIcon />
-//                 Add Additional Charges
-//               </Button>
-//             </span>
-//           </div>
-
-//           <div>
-//             <div className="pb-3 flex justify-end items-center px-3">
-//               <Button size="sm" variant="outline">
-//                 <PlusIcon /> Product Row
-//               </Button>
-//             </div>
-//             <Table>
-//               <TableHeader>
-//                 <TableRow>
-//                   <TableHead className="w-16 text-center">SR.</TableHead>
-//                   <TableHead className="text-center">
-//                     Product / Other Charges
-//                   </TableHead>
-//                   <TableHead className="text-center w-28">
-//                     HSN/SAC Code
-//                   </TableHead>
-//                   <TableHead className="text-center w-28">
-//                     Qty. / Stock
-//                   </TableHead>
-//                   <TableHead className="text-center w-28">UOM</TableHead>
-//                   <TableHead className="text-center w-28">Price (Rs)</TableHead>
-//                   <TableHead className="text-center w-28">
-//                     Discount(%)
-//                   </TableHead>
-//                   <TableHead className="text-center w-28">CESS(%)</TableHead>
-//                   <TableHead className="text-center w-28">TOTAL(Rs)</TableHead>
-//                 </TableRow>
-//               </TableHeader>
-//               <TableBody>
-//                 <TableRow>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                   <TableCell>
-//                     <Input />
-//                   </TableCell>
-//                 </TableRow>
-//               </TableBody>
-//               <TableFooter>
-//                 <TableRow>
-//                   <TableCell colSpan={2} className="text-right">
-//                     Total Inv. Value
-//                   </TableCell>
-//                   <TableCell className="text-right"></TableCell>
-//                   <TableCell className="text-right">0</TableCell>
-//                   <TableCell className="text-right"></TableCell>
-//                   <TableCell className="text-right">0</TableCell>
-//                   <TableCell className="text-right">0</TableCell>
-//                   <TableCell className="text-right">0</TableCell>
-//                   <TableCell className="text-right">0</TableCell>
-//                 </TableRow>
-//               </TableFooter>
-//             </Table>
-//           </div>
-
-//           <div className="flex gap-x-10 px-5">
-//             <div className="w-full space-y-3">
-//               <InputFeild type="date" label={"Due Date"} />
-//               <Separator />
-//               <h3 className="font-medium">
-//                 Terms & Condition / Additional Note
-//               </h3>
-//               <InputFeild label={"Title"} />
-//               <InputFeild label={"Details"} type="textarea" />
-//               <Button variant="outline" size="sm">
-//                 <PlusIcon /> Add Notes
-//               </Button>
-//             </div>
-
-//             <div className="w-full space-y-3">
-//               <div className="flex justify-between items-center">
-//                 <span>Total Taxable</span>
-//                 <span>0</span>
-//               </div>
-//               <Separator />
-//               <div className="flex justify-between items-center">
-//                 <span>Total Tax</span>
-//                 <span>0</span>
-//               </div>
-//               <Separator />
-//               <div className="grid grid-cols-4 items-center">
-//                 <span>TCS</span>
-//                 <span className="flex gap-x-1 items-center">
-//                   <span>Rs</span>
-//                   <Switch />
-//                   <span>%</span>
-//                 </span>
-//                 <span className="flex gap-x-1 items-center">
-//                   <span>-</span>
-//                   <Switch />
-//                   <span>+</span>
-//                 </span>
-//                 <Input />
-//               </div>
-//               <div className="grid grid-cols-4 items-center">
-//                 <span>Discount</span>
-//                 <span className="flex gap-x-1 items-center">
-//                   <span>Rs</span>
-//                   <Switch />
-//                   <span>%</span>
-//                 </span>
-//                 <span className="flex gap-x-1 items-center">
-//                   <span>-</span>
-//                   <Switch />
-//                   <span>+</span>
-//                 </span>
-//                 <Input />
-//               </div>
-//               <Separator />
-//               <div className="flex justify-between items-center">
-//                 <span>GRAND TOTAL</span>
-//                 <span>0</span>
-//               </div>
-
-//               <Separator />
-
-//               <div className="flex justify-between items-center ">
-//                 <span>
-//                   Payment Type
-//                   <RedStar />
-//                 </span>
-//                 <span className="flex items-center gap-x-3">
-//                   <Button variant="outline">Credit</Button>
-//                   <Button variant="outline">Cash</Button>
-//                   <Button variant="outline">Cheque</Button>
-//                   <Button variant="outline">Online</Button>
-//                 </span>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="flex justify-end items-center gap-x-5 border-t-[0.5px] py-5 px-3">
-//             <Button>
-//               <IconLeft /> Back
-//             </Button>
-//             <Button>
-//               <Trash2 /> Discard
-//             </Button>
-//             <Button>
-//               <PrinterIcon /> Print & Save
-//             </Button>
-//             <Button>
-//               <FileIcon /> Save
-//             </Button>
-//           </div>
-//         </Card>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Page;
-
-// const InputFeild = ({ label, required = false, type = "text", value = "", onChange=()=>{} }) => {
-//   return (
-//     <div className="grid grid-cols-3 gap-3 items-start">
-//       <Label className="col-span-1 pt-1">
-//         {label}
-//         {required && <RedStar />}
-//       </Label>
-//       {type === "date" ? (
-//         <Popover>
-//           <PopoverTrigger asChild>
-//             <Button
-//               variant={"outline"}
-//               className={cn(
-//                 "col-span-2 w-full pl-3 text-left font-normal",
-//                 !value && "text-muted-foreground"
-//               )}
-//             >
-//               {field.value ? (
-//                 format(value, "PPP")
-//               ) : (
-//                 <span>Pick a date</span>
-//               )}
-//               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-//             </Button>
-//           </PopoverTrigger>
-//           <PopoverContent className="w-auto p-0" align="start">
-//             <Calendar
-//               mode="single"
-//               selected={value}
-//               onSelect={onChange}
-//               disabled={(date) =>
-//                 date > new Date() || date < new Date("1900-01-01")
-//               }
-//               initialFocus
-//             />
-//           </PopoverContent>
-//         </Popover>
-//       ) : type === "textarea" ? (
-//         <Textarea className="col-span-2" value={value} onChange={onChange} />
-//       ) : (
-//         <Input type={type} className="col-span-2" />
-//       )}
-//     </div>
-//   );
-// };
-
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { z } from "zod";
 import RedStar from "@/components/custom/RedStart";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -414,6 +42,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { IconLeft } from "react-day-picker";
+import { AddSaleInvoice } from "@/actions/SaleInvoice";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // Initial product row structure
 const initialProductRow = {
@@ -429,6 +60,9 @@ const initialProductRow = {
 };
 
 const Page = () => {
+  const session = useSession();
+  const router = useRouter();
+
   // Customer Information State
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
@@ -444,12 +78,14 @@ const Page = () => {
   const [invoiceDetails, setInvoiceDetails] = useState({
     type: "",
     number: "",
+    date: null,
     challanNo: "",
     challanDate: null,
     poNo: "",
     poDate: null,
     lrNo: "",
     lrDate: null,
+    eWayNo: "",
     delivery: "",
   });
 
@@ -539,14 +175,36 @@ const Page = () => {
         totals,
       };
 
+      if (!session || !session.data) {
+        alert("Please login to proceed with the invoice creation.");
+        router.push("/login");
+      }
+
+      const SendData = async () => {
+        const response = await AddSaleInvoice(
+          invoiceData,
+          session.data.user.email
+        );
+        if (response.ok) {
+          alert("Successfully added");
+          router.push("/dashboard/sale-invoice");
+          return;
+        }
+        alert("Failed to add");
+        return;
+      };
+
       switch (action) {
         case "save":
           // Save logic
-          console.log("Saving invoice:", invoiceData);
+          SendData();
+          console.log("Saving invoice");
           break;
         case "print":
           // Print logic
-          console.log("Printing invoice:", invoiceData);
+          SendData();
+          // Print LogicInvoice
+          console.log("Printing & Saving invoice");
           break;
         case "discard":
           // Reset form
@@ -699,9 +357,9 @@ const Page = () => {
           </Table>
 
           {/* Additional Details and Totals */}
-          <div className="flex gap-x-10 px-5">
+          <div className="flex flex-col-reverse md:flex-row gap-x-10 px-5">
             {/* Notes Section */}
-            <div className="w-full space-y-3">
+            <div className="w-full space-y-3 mb-10">
               <InputField
                 type="date"
                 label="Due Date"
@@ -870,7 +528,7 @@ const Page = () => {
               <Separator />
 
               {/* Payment Type Selection */}
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center pb-10">
                 <span>
                   Payment Type
                   <RedStar />
