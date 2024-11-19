@@ -103,7 +103,7 @@ export function DashboardSidebar() {
                   <Collapsible
                     key={item.title}
                     title={item.title}
-                    defaultOpen
+                    defaultOpen={false}
                     className="group/collapsible"
                   >
                     <SidebarGroup className="p-0">

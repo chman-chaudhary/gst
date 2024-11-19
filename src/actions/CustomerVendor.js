@@ -14,8 +14,8 @@ export const getCustomerVendors = async (userEmail) => {
       return null;
     }
 
-    const response = await CustomerVendor.find({ user: user._id });
-    return response;
+    const response = await CustomerVendor.find({ user: user._id }).lean();
+    return JSON.parse(JSON.stringify(response));
   } catch (e) {
     console.log("Error while getting Customer/Vendor", e);
     return null;
@@ -50,7 +50,6 @@ export const AddCustomerVendor = async (customerVendorData, userEmail) => {
       country,
       distanceForEwayBill,
       balanceType,
-      openingBalance,
       licenseNo,
       faxNo,
       website,
@@ -75,8 +74,6 @@ export const AddCustomerVendor = async (customerVendorData, userEmail) => {
       !state ||
       !country ||
       distanceForEwayBill === undefined ||
-      !balanceType ||
-      openingBalance === undefined ||
       dueDays === undefined
     ) {
       return { success: false, error: "All required fields must be filled" };
@@ -103,14 +100,11 @@ export const AddCustomerVendor = async (customerVendorData, userEmail) => {
       pan,
       billingAddress,
       distanceForEwayBill,
-      balanceType,
-      openingBalance,
       licenseNo,
       faxNo,
       website,
       dueDays,
       note,
-      enable,
       user: user._id,
     });
 

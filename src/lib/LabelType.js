@@ -29,6 +29,7 @@ export const CustomerVendorLabel = {
   customer: "Customer",
   vendor: "Vendor",
   "customer/vendor": "Customer/Vendor",
+  remaingAmount: "Remaining Amount",
 };
 
 export const UnitOfMeasurement = [

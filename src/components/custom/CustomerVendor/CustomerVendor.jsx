@@ -16,6 +16,7 @@ import { getServerSession } from "next-auth";
 const CustomerVendor = async () => {
   const session = await getServerSession();
   const customerVendors = await getCustomerVendors(session.user.email);
+  console.log(customerVendors);
 
   if (!customerVendors) {
     return (
@@ -65,7 +66,7 @@ const CustomerVendor = async () => {
                         {cv.companyName}
                       </TableCell>
                       <TableCell className="text-center">
-                        &#8377; {cv.openingBalance}
+                        &#8377; {cv.remainingAmount}
                       </TableCell>
                       <TableCell className="text-center">
                         {cv.contactNo}

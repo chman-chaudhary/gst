@@ -1,18 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
+
 import RedStar from "@/components/custom/RedStart";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -31,20 +25,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import {
-  CalendarIcon,
-  FileIcon,
-  PlusIcon,
-  PrinterIcon,
-  Trash2,
-} from "lucide-react";
+import { FileIcon, PlusIcon, PrinterIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { IconLeft } from "react-day-picker";
 import { AddSaleInvoice } from "@/actions/SaleInvoice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { getCustomerVendors } from "@/actions/CustomerVendor";
+import InputField from "@/components/custom/Dashboard/InputFeildAddForm";
 
 // Initial product row structure
 const initialProductRow = {
@@ -65,14 +53,15 @@ const Page = () => {
 
   // Customer Information State
   const [customerInfo, setCustomerInfo] = useState({
-    name: "",
-    address: "",
+    customerId: "",
     contactPerson: "",
     phone: "",
     gstPan: "",
     revCharge: "",
     placeOfSupply: "",
   });
+
+  const [customers, setCustomers] = useState([]);
 
   // Invoice Details State
   const [invoiceDetails, setInvoiceDetails] = useState({
@@ -106,6 +95,7 @@ const Page = () => {
     totalTaxable: 0,
     totalTax: 0,
     grandTotal: 0,
+    payment: 0,
   });
 
   // Calculate row total
@@ -138,6 +128,21 @@ const Page = () => {
     ]);
   };
 
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        if (session.data) {
+          console.log(session.data.user.email);
+          const customers = await getCustomerVendors(session.data.user.email);
+          setCustomers(customers);
+        }
+      } catch (e) {
+        console.log("ERROR! while fetching customers", e);
+      }
+    };
+    fetchCustomers();
+  }, []);
+
   // Calculate totals
   useEffect(() => {
     const subtotal = productRows.reduce((sum, row) => sum + row.total, 0);
@@ -155,11 +160,12 @@ const Page = () => {
         ? discountAmount
         : -discountAmount);
 
-    setTotals({
+    setTotals((prev) => ({
       totalTaxable: subtotal,
       totalTax: tcsAmount,
       grandTotal: finalTotal,
-    });
+      payment: prev.payment,
+    }));
   }, [productRows, additionalDetails.tcs, additionalDetails.discount]);
 
   // Handle form submission
@@ -197,14 +203,14 @@ const Page = () => {
       switch (action) {
         case "save":
           // Save logic
+          console.log("Saving invoice", invoiceData);
           SendData();
-          console.log("Saving invoice");
           break;
         case "print":
+          console.log("Printing & Saving invoice", invoiceData);
           // Print logic
           SendData();
           // Print LogicInvoice
-          console.log("Printing & Saving invoice");
           break;
         case "discard":
           // Reset form
@@ -231,6 +237,7 @@ const Page = () => {
           {/* Customer Information Card */}
           <CustomerInformationCard
             customerInfo={customerInfo}
+            customers={customers}
             setCustomerInfo={setCustomerInfo}
           />
 
@@ -266,7 +273,7 @@ const Page = () => {
                 <TableHead className="text-center w-28">TOTAL</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="z-0">
               {productRows.map((row, index) => (
                 <TableRow key={row.id}>
                   <TableCell>{index + 1}</TableCell>
@@ -289,6 +296,7 @@ const Page = () => {
                   <TableCell>
                     <Input
                       type="number"
+                      min={0}
                       value={row.quantity}
                       onChange={(e) =>
                         handleProductRowChange(
@@ -309,6 +317,7 @@ const Page = () => {
                   </TableCell>
                   <TableCell>
                     <Input
+                      min={0}
                       type="number"
                       value={row.price}
                       onChange={(e) =>
@@ -318,6 +327,7 @@ const Page = () => {
                   </TableCell>
                   <TableCell>
                     <Input
+                      min={0}
                       type="number"
                       value={row.discount}
                       onChange={(e) =>
@@ -331,6 +341,7 @@ const Page = () => {
                   </TableCell>
                   <TableCell>
                     <Input
+                      min={0}
                       type="number"
                       value={row.cess}
                       onChange={(e) =>
@@ -357,7 +368,7 @@ const Page = () => {
           </Table>
 
           {/* Additional Details and Totals */}
-          <div className="flex flex-col-reverse md:flex-row gap-x-10 px-5">
+          <div className="flex flex-col-reverse lg:flex-row gap-x-10 px-5">
             {/* Notes Section */}
             <div className="w-full space-y-3 mb-10">
               <InputField
@@ -524,11 +535,10 @@ const Page = () => {
                   ₹{totals.grandTotal.toFixed(2)}
                 </span>
               </div>
-
               <Separator />
 
               {/* Payment Type Selection */}
-              <div className="flex justify-between items-center pb-10">
+              <div className="flex justify-between items-center">
                 <span>
                   Payment Type
                   <RedStar />
@@ -553,6 +563,20 @@ const Page = () => {
                     </Button>
                   ))}
                 </div>
+              </div>
+              <div className="pb-8">
+                <InputField
+                  label={"Payment Amount"}
+                  type={"number"}
+                  value={totals.payment || 0}
+                  onChange={(e) =>
+                    setTotals((prev) => ({
+                      ...prev,
+                      payment: parseFloat(e.target.value) || 0,
+                    }))
+                  }
+                  required="true"
+                />
               </div>
             </div>
           </div>
@@ -582,87 +606,14 @@ const Page = () => {
 };
 
 // Enhanced InputField component with better date handling
-const InputField = ({
-  label,
-  required = false,
-  type = "text",
-  value,
-  onChange,
-  ...props
-}) => {
-  if (type === "date") {
-    return (
-      <div className="grid grid-cols-3 gap-3 items-start">
-        <Label className="col-span-1 pt-1">
-          {label}
-          {required && <RedStar />}
-        </Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "col-span-2 w-full pl-3 text-left font-normal",
-                !value && "text-muted-foreground"
-              )}
-            >
-              {value ? format(value, "PPP") : <span>Pick a date</span>}
-              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={value}
-              onSelect={onChange}
-              disabled={(date) =>
-                date > new Date() || date < new Date("1900-01-01")
-              }
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-    );
-  }
-
-  if (type === "textarea") {
-    return (
-      <div className="grid grid-cols-3 gap-3 items-start">
-        <Label className="col-span-1 pt-1">
-          {label}
-          {required && <RedStar />}
-        </Label>
-        <Textarea
-          className="col-span-2"
-          value={value}
-          onChange={onChange}
-          {...props}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid grid-cols-3 gap-3 items-start">
-      <Label className="col-span-1 pt-1">
-        {label}
-        {required && <RedStar />}
-      </Label>
-      <Input
-        type={type}
-        className="col-span-2"
-        value={value}
-        onChange={onChange}
-        {...props}
-      />
-    </div>
-  );
-};
 
 export default Page;
 
-const CustomerInformationCard = ({ customerInfo, setCustomerInfo }) => (
+const CustomerInformationCard = ({
+  customerInfo,
+  setCustomerInfo,
+  customers,
+}) => (
   <Card className="w-full lg:w-2/5 mb-5">
     <CardContent className="p-3 space-y-5">
       <div className="flex justify-between items-end h-8">
@@ -683,17 +634,29 @@ const CustomerInformationCard = ({ customerInfo, setCustomerInfo }) => (
         </Label>
         <Select
           onValueChange={(value) =>
-            setCustomerInfo((prev) => ({ ...prev, name: value }))
+            setCustomerInfo((prev) => ({
+              ...prev,
+              customerId: value,
+            }))
           }
-          value={customerInfo.name}
+          value={customerInfo.customerId}
         >
           <SelectTrigger className="col-span-2">
-            <SelectValue placeholder="Select Customer" />
+            <SelectValue
+              placeholder="Select Customer"
+              value={
+                customers.find((c) => c._id === customerInfo.customerId)
+                  ?.companyName || "Select Customer"
+              }
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="customer1">Customer 1</SelectItem>
-            <SelectItem value="customer2">Customer 2</SelectItem>
-            <SelectItem value="customer3">Customer 3</SelectItem>
+            {customers &&
+              customers.map((customer) => (
+                <SelectItem key={customer._id} value={customer._id}>
+                  {customer.companyName}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
@@ -702,14 +665,11 @@ const CustomerInformationCard = ({ customerInfo, setCustomerInfo }) => (
       <InputField
         label="Address"
         type="textarea"
-        required={true}
-        value={customerInfo.address}
-        onChange={(e) =>
-          setCustomerInfo((prev) => ({
-            ...prev,
-            address: e.target.value,
-          }))
+        value={
+          customers.find((c) => c._id === customerInfo.customerId)
+            ?.billingAddress?.city || ""
         }
+        disabled={true}
       />
 
       {/* Contact Person */}

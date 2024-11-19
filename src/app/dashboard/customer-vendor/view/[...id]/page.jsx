@@ -53,7 +53,8 @@ const Page = async ({ params }) => {
             key !== "_id" &&
             key !== "__v" &&
             value &&
-            key !== "enable"
+            key !== "enable" &&
+            key !== "user"
           ) {
             return (
               <InputField

@@ -1,7 +1,6 @@
 import { GetSaleInvoices } from "@/actions/SaleInvoice";
 import { InvoiceList } from "@/components/custom/SaleInvoice/InvoiceList";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { PlusIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
@@ -13,6 +12,7 @@ const Page = async () => {
     redirect("/login");
   }
   const { invoices } = await GetSaleInvoices(session.user.email);
+  console.log(invoices);
 
   return (
     <div className="px-10 py-5 space-y-5 w-full">

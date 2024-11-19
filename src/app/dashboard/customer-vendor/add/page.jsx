@@ -41,14 +41,11 @@ const Page = () => {
     state: "",
     country: "",
     distanceForEwayBill: "",
-    balanceType: "credit",
-    openingBalance: "",
     licenseNo: "",
     faxNo: "",
     website: "",
     dueDays: "",
     note: "",
-    enable: true,
   });
 
   const handleSubmit = async (e) => {
@@ -246,49 +243,6 @@ const Page = () => {
 
           <div>
             <hr />
-            <h3 className="text-lg font-medium p-3">Opening Balance</h3>
-            <hr />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <Label htmlFor="customerBalance" className="w-1/4 text-base ">
-              Customer Balance
-            </Label>
-            <RadioGroup
-              defaultValue="credit"
-              className="w-3/4 flex justify-around"
-              value={newClient.balanceType || "customer"}
-              onValueChange={(value) =>
-                setNewClient({ ...newClient, balanceType: value })
-              }
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="credit" id="credit" />
-                <Label htmlFor="credit" className="text-base">
-                  Credit
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="debit" id="debit" />
-                <Label htmlFor="debit" className="text-base">
-                  Debit
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <InputField
-            label="Amount"
-            type="number"
-            name="openingBalance"
-            value={newClient.openingBalance || ""}
-            onChange={handleChange}
-            placeholder="0"
-            required={true}
-          />
-
-          <div>
-            <hr />
             <h3 className="text-lg font-medium p-3">Custom Fields</h3>
             <hr />
           </div>
@@ -335,25 +289,6 @@ const Page = () => {
             value={newClient.note || ""}
             onChange={handleChange}
           />
-
-          <div className="flex items-center gap-x-6">
-            <Label htmlFor="enable" className="text-base">
-              Enable
-            </Label>
-            <span className="flex items-center gap-x-2">
-              <Checkbox
-                id="enable"
-                onCheckedChange={(value) =>
-                  setNewClient({ ...newClient, enable: value })
-                }
-                value={newClient.enable}
-                className="size-5"
-              />
-              <Label htmlFor="enable" className="text-base">
-                Company will be visible on all document.
-              </Label>
-            </span>
-          </div>
           <Button type="submit">
             <CheckIcon /> Save
           </Button>

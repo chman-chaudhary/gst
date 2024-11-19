@@ -21,6 +21,9 @@ export const InvoiceList = ({ invoices }) => {
             <TableHead className="text-center text-base">Date</TableHead>
             <TableHead className="text-center text-base">Total</TableHead>
             <TableHead className="text-center text-base">
+              Outstanding Amount
+            </TableHead>
+            <TableHead className="text-center text-base">
               Payment Type
             </TableHead>
           </TableRow>
@@ -29,7 +32,8 @@ export const InvoiceList = ({ invoices }) => {
           {invoices.map((invoice, index) => {
             return (
               <Link
-                href={`/dashboard/sale-invoice/view/${invoice._id}`}
+                // href={`/dashboard/sale-invoice/view/${invoice._id}`}
+                href={"#"}
                 key={index}
                 className="cursor-pointer"
                 legacyBehavior
@@ -39,7 +43,7 @@ export const InvoiceList = ({ invoices }) => {
                     {invoice.invoiceDetails.number}
                   </TableCell>
                   <TableCell className="text-center text-base flex flex-col gap-x-2">
-                    <span>{invoice.customerInfo.name}</span>
+                    <span>{invoice.customerInfo?.customerId?.companyName}</span>
                     <span className="text-sm text-gray-500/70">
                       {invoice.customerInfo.contactPerson}
                     </span>
@@ -49,6 +53,9 @@ export const InvoiceList = ({ invoices }) => {
                   </TableCell>
                   <TableCell className="text-center text-base">
                     {invoice.totals.grandTotal}
+                  </TableCell>
+                  <TableCell className="text-center text-base">
+                    {invoice.totals?.grandTotal - invoice.totals?.payment || 0}
                   </TableCell>
                   <TableCell className="text-center text-base">
                     {invoice.additionalDetails.paymentType.toUpperCase()}

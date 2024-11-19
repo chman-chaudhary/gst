@@ -1,6 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
+import CustomerVendor from "@/lib/models/CustomerVendor";
 import Invoice from "@/lib/models/SaleInvoice";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";
@@ -14,6 +15,19 @@ export const AddSaleInvoice = async (invoiceData, userEmail) => {
       return { ok: false, message: "User not found" };
     }
 
+    const customer = await CustomerVendor.findById(
+      invoiceData?.customerInfo.customerId
+    );
+    console.log("Customer:", customer);
+    const remainingAmount =
+      invoiceData.totals.grandTotal - invoiceData.totals.payment;
+    console.log("Remaining Amount:", remainingAmount);
+    if (remainingAmount) {
+      const updatedCustomer = await CustomerVendor.findByIdAndUpdate(
+        customer._id,
+        { remainingAmount: remainingAmount }
+      );
+    }
     // Create new invoice instance
     const newInvoice = new Invoice({ ...invoiceData, createdBy: user._id });
 
@@ -40,7 +54,10 @@ export const GetSaleInvoices = async (userEmail) => {
       return { ok: false, message: "User not found" };
     }
     // Find all invoices
-    const invoices = await Invoice.find({ createdBy: user._id });
+    const invoices = await Invoice.find({ createdBy: user._id }).populate({
+      path: "customerInfo.customerId",
+      model: "CustomerVendor", // Ensure this matches your CustomerVendor model name
+    });
     return { ok: true, invoices };
   } catch (error) {
     // Handle validation errors
@@ -154,77 +171,3 @@ export const updateSaleInvoice = async (req, res) => {
     });
   }
 };
-
-// export const getSaleInvoices = async (req, res) => {
-//   await dbConnect();
-//   try {
-//     const {
-//       page = 1,
-//       limit = 10,
-//       sortBy = "createdAt",
-//       sortOrder = "desc",
-//       startDate,
-//       endDate,
-//       customerName,
-//       invoiceNumber,
-//     } = req.query;
-
-//     Build filter object
-//     let filter = {};
-
-//     Date range filter
-//     if (startDate && endDate) {
-//       filter["invoiceDetails.date"] = {
-//         $gte: new Date(startDate),
-//         $lte: new Date(endDate),
-//       };
-//     }
-
-//     Customer name filter (case-insensitive)
-//     if (customerName) {
-//       filter["customerInfo.name"] = {
-//         $regex: customerName,
-//         $options: "i",
-//       };
-//     }
-
-//     Invoice number filter
-//     if (invoiceNumber) {
-//       filter["invoiceDetails.number"] = invoiceNumber;
-//     }
-
-//     Calculate skip value for pagination
-//     const skip = (parseInt(page) - 1) * parseInt(limit);
-
-//     Build sort object
-//     const sort = {
-//       [sortBy]: sortOrder === "desc" ? -1 : 1,
-//     };
-
-//     Get total count of documents matching the filter
-//     const total = await Invoice.countDocuments(filter);
-
-//     Fetch invoices
-//     const invoices = await Invoice.find(filter)
-//       .sort(sort)
-//       .skip(skip)
-//       .limit(parseInt(limit));
-
-//     res.status(200).json({
-//       success: true,
-//       data: invoices,
-//       pagination: {
-//         total,
-//         page: parseInt(page),
-//         totalPages: Math.ceil(total / parseInt(limit)),
-//         limit: parseInt(limit),
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Error fetching invoices",
-//       error: error.message,
-//     });
-//   }
-// };

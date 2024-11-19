@@ -49,12 +49,9 @@ const NoteSchema = new Schema({
 
 // Customer Info Schema
 const CustomerInfoSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
+  customerId: {
+    type: Schema.Types.ObjectId,
+    ref: "CustomerVendor",
     required: true,
   },
   contactPerson: String,
@@ -149,6 +146,11 @@ const TotalsSchema = new Schema({
     type: Number,
     required: true,
     min: 0,
+  },
+  payment: {
+    type: Number,
+    required: true,
+    default: 0,
   },
 });
 

@@ -52,15 +52,6 @@ const CustomerVendorSchema = new Schema({
     type: Number,
     min: 0,
   },
-  balanceType: {
-    type: String,
-    enum: ["credit", "debit"],
-    default: "credit",
-  },
-  openingBalance: {
-    type: Number,
-    default: 0,
-  },
   licenseNo: {
     type: String,
     uppercase: true,
@@ -82,9 +73,9 @@ const CustomerVendorSchema = new Schema({
     type: String,
     trim: true,
   },
-  enable: {
-    type: Boolean,
-    default: true,
+  remainingAmount: {
+    type: Number,
+    default: 0,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
