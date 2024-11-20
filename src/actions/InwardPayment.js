@@ -11,16 +11,22 @@ export const AddInwardPayment = async (data, userEmail) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const user = await User.findOne({ email: userEmail });
+    const user = await User.findOneAndUpdate(
+      { email: userEmail },
+      { $inc: { cash: data.payment } },
+      { new: true, session }
+    );
     if (!user) {
+      await session.abortTransaction();
       return { error: "User not found" };
     }
+
     const customerVendor = await CustomerVendor.findOneAndUpdate(
       { _id: data.customerVendorId, remainingAmount: { $gte: data.payment } },
       { $inc: { remainingAmount: -data.payment } },
       { new: true, session }
     );
-    console.log("Updated Customer Vendor", customerVendor);
+
     if (!customerVendor) {
       await session.abortTransaction();
       return { message: "Insufficient balance or invalid ID" };

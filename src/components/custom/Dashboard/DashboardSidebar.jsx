@@ -10,6 +10,8 @@ import {
   PackageSearch,
   Scroll,
   Users,
+  CreditCard,
+  PackageCheck,
 } from "lucide-react";
 
 import {
@@ -58,20 +60,27 @@ const navlinks = [
       },
       {
         title: "Outward Payments",
-        url: "/dashboard/outward-payments",
+        url: "/dashboard/outward-payment",
         icon: ArrowBigLeft,
       },
     ],
   },
   {
-    title: "Sales Invoice",
-    url: "/dashboard/sale-invoice",
-    icon: Scroll,
-  },
-  {
-    title: "Purchase Invoice",
+    title: "Invoices",
     url: "#",
-    icon: FileCode,
+    icon: Scroll,
+    items: [
+      {
+        title: "Sales Invoice",
+        url: "/dashboard/sale-invoice",
+        icon: PackageCheck,
+      },
+      {
+        title: "Purchase Invoice",
+        url: "/dashboard/purchase-invoice",
+        icon: CreditCard,
+      },
+    ],
   },
   {
     title: "Expense Income",

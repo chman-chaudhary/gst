@@ -11,6 +11,10 @@ const UserSchema = new Schema({
     required: true,
     minlength: 6,
   },
+  cash: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const User = models.User || model("User", UserSchema);

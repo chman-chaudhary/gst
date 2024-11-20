@@ -18,7 +18,11 @@ export const AddSaleInvoice = async (invoiceData, userEmail) => {
     const customer = await CustomerVendor.findById(
       invoiceData?.customerInfo.customerId
     );
-    console.log("Customer:", customer);
+
+    const updatedUser = await User.findByIdAndUpdate(user._id, {
+      $inc: { cash: invoiceData.totals.payment },
+    });
+
     const remainingAmount =
       invoiceData.totals.grandTotal - invoiceData.totals.payment;
     console.log("Remaining Amount:", remainingAmount);

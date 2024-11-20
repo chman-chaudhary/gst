@@ -146,3 +146,45 @@ export const deleteCustomerVendor = async (_id) => {
     return false;
   }
 };
+
+export const GetCustomer = async (userEmail) => {
+  await dbConnect();
+  try {
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
+    const response = await CustomerVendor.find({
+      user: user._id,
+      $or: [{ companyType: "customer" }, { companyType: "customer/vendor" }],
+    }).lean();
+    return JSON.parse(JSON.stringify(response));
+  } catch (e) {
+    console.log("Error while getting Customer/Vendor", e);
+    return null;
+  }
+};
+
+export const GetVendors = async (userEmail) => {
+  await dbConnect();
+  try {
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+
+    const response = await CustomerVendor.find({
+      user: user._id,
+      $or: [{ companyType: "vendor" }, { companyType: "customer/vendor" }],
+    }).lean();
+    return JSON.parse(JSON.stringify(response));
+  } catch (e) {
+    console.log("Error while getting Customer/Vendor", e);
+    return null;
+  }
+};
