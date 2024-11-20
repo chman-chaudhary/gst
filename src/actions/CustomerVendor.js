@@ -49,13 +49,11 @@ export const AddCustomerVendor = async (customerVendorData, userEmail) => {
       state,
       country,
       distanceForEwayBill,
-      balanceType,
       licenseNo,
       faxNo,
       website,
       dueDays,
       note,
-      enable,
     } = customerVendorData;
 
     // Validate required fields

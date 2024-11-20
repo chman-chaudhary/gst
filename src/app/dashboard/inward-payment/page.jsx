@@ -21,7 +21,6 @@ const Page = async () => {
   }
 
   const inwardPayments = await GetInwardPayments(session.user.email);
-  console.log(inwardPayments);
 
   return (
     <div className="px-10 py-5 space-y-5 w-full">
@@ -54,23 +53,29 @@ const Page = async () => {
         </TableHeader>
         <TableBody>
           {inwardPayments.map((ip) => (
-            <TableRow key={ip._id}>
-              <TableCell className="text-center text-base">
-                {ip.receiptNo}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.customerVendorId.companyName}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.paymentDate.toDateString()}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.paymentType}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.payment}
-              </TableCell>
-            </TableRow>
+            <Link
+              href={`/dashboard/inward-payment/view/${ip._id}`}
+              key={ip._id}
+              legacyBehavior
+            >
+              <TableRow>
+                <TableCell className="text-center text-base">
+                  {ip.receiptNo}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {ip.customerVendorId.companyName}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {ip.paymentDate.toDateString()}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {ip.paymentType}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {ip.payment}
+                </TableCell>
+              </TableRow>
+            </Link>
           ))}
         </TableBody>
       </Table>

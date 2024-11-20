@@ -12,7 +12,6 @@ const Page = async () => {
     redirect("/login");
   }
   const { invoices } = await GetSaleInvoices(session.user.email);
-  console.log(invoices);
 
   return (
     <div className="px-10 py-5 space-y-5 w-full">

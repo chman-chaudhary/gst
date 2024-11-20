@@ -46,7 +46,6 @@ const AddForm = () => {
         name: newProductGroup,
         userEmail: session.data.user.email,
       });
-      console.log("Response:", response);
 
       if (!response.data) {
         throw new Error("Failed to create product group");
@@ -62,7 +61,6 @@ const AddForm = () => {
   useEffect(() => {
     const fetchProductGroup = async () => {
       const response = await GetProductGroups(session.data.user.email);
-      console.log("Product Group:", response);
       setProductGroups(response);
     };
     fetchProductGroup();

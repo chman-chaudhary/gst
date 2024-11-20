@@ -1,4 +1,4 @@
-// import { GetInwardPayments } from "@/actions/InwardPayment";
+import { GetOutwardPayments } from "@/actions/OutwardPayment";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -20,8 +20,7 @@ const Page = async () => {
     return redirect("/login");
   }
 
-  //   const inwardPayments = await GetInwardPayments(session.user.email);
-  //   console.log(inwardPayments);
+  const outwardPayments = await GetOutwardPayments(session.user.email);
 
   return (
     <div className="px-10 py-5 space-y-5 w-full">
@@ -34,7 +33,7 @@ const Page = async () => {
         </Link>
       </div>
       <hr />
-      {/* <Table>
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="text-center text-base">Receipt No</TableHead>
@@ -53,27 +52,33 @@ const Page = async () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {inwardPayments.map((ip) => (
-            <TableRow key={ip._id}>
-              <TableCell className="text-center text-base">
-                {ip.receiptNo}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.customerVendorId.companyName}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.paymentDate.toDateString()}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.paymentType}
-              </TableCell>
-              <TableCell className="text-center text-base">
-                {ip.payment}
-              </TableCell>
-            </TableRow>
+          {outwardPayments.map((op) => (
+            <Link
+              href={`/dashboard/outward-payment/view/${op._id}`}
+              key={op._id}
+              legacyBehavior
+            >
+              <TableRow key={op._id}>
+                <TableCell className="text-center text-base">
+                  {op.receiptNo}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {op.customerVendorId.companyName}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {op.paymentDate.toDateString()}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {op.paymentType}
+                </TableCell>
+                <TableCell className="text-center text-base">
+                  {op.payment}
+                </TableCell>
+              </TableRow>
+            </Link>
           ))}
         </TableBody>
-      </Table> */}
+      </Table>
     </div>
   );
 };

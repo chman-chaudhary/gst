@@ -13,10 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import RedStar from "../RedStart";
-import { AddInwardPayment } from "@/actions/InwardPayment";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { AddOutwardPayment } from "@/actions/OutwardPayment";
 
 const AddForm = ({ vendors }) => {
   const session = useSession();
@@ -33,25 +33,24 @@ const AddForm = ({ vendors }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // if (session.data) {
-    //   const response = await AddInwardPayment(
-    //     formData,
-    //     session.data.user.email
-    //   );
-    //   if (response.ok) {
-    //     toast({
-    //       title: "Inward Payment added successfully.",
-    //     });
-    //     router.push("/dashboard/inward-payment");
-    //   } else {
-    //     toast({
-    //       title: response.message,
-    //       variant: "destructive",
-    //     });
-    //     router.push("/dashboard/inward-payment");
-    //   }
-    // }
+    if (session.data) {
+      const response = await AddOutwardPayment(
+        formData,
+        session.data.user.email
+      );
+      if (response.ok) {
+        toast({
+          title: "Outward Payment added successfully.",
+        });
+        router.push("/dashboard/outward-payment");
+      } else {
+        toast({
+          title: response.message,
+          variant: "destructive",
+        });
+        router.push("/dashboard/inward-payment");
+      }
+    }
   };
 
   return (

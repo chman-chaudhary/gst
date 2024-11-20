@@ -35,7 +35,6 @@ export const AddPurchaseInvoice = async (invoiceData, userEmail) => {
 
     // Save the invoice
     const res = await newInvoice.save();
-    console.log(res);
     if (!res) {
       return { ok: false, message: "Error while add Purchase Invoice" };
     }

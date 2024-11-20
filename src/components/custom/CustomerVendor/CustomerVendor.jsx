@@ -16,7 +16,6 @@ import { getServerSession } from "next-auth";
 const CustomerVendor = async () => {
   const session = await getServerSession();
   const customerVendors = await getCustomerVendors(session.user.email);
-  console.log(customerVendors);
 
   if (!customerVendors) {
     return (

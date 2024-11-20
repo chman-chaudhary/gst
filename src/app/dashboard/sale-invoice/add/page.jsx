@@ -25,9 +25,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FileIcon, PlusIcon, PrinterIcon, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  FileIcon,
+  PlusIcon,
+  PrinterIcon,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
-import { IconLeft } from "react-day-picker";
 import { AddSaleInvoice } from "@/actions/SaleInvoice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -132,7 +137,6 @@ const Page = () => {
     const fetchCustomers = async () => {
       try {
         if (session.data) {
-          console.log(session.data.user.email);
           const customers = await getCustomerVendors(session.data.user.email);
           setCustomers(customers);
         }
@@ -584,7 +588,7 @@ const Page = () => {
           {/* Action Buttons */}
           <div className="flex justify-end items-center gap-x-5 border-t-[0.5px] py-5 px-3">
             <Button variant="outline" onClick={() => window.history.back()}>
-              <IconLeft className="mr-2" /> Back
+              <ChevronLeft className="mr-2" /> Back
             </Button>
             <Button
               variant="destructive"

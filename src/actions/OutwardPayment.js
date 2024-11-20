@@ -2,18 +2,18 @@
 
 import dbConnect from "@/lib/dbConnect";
 import CustomerVendor from "@/lib/models/CustomerVendor";
-import InwardPayment from "@/lib/models/InwardPayment";
+import OutwardPayment from "@/lib/models/OutwardPayment";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";
 
-export const AddInwardPayment = async (data, userEmail) => {
+export const AddOutwardPayment = async (data, userEmail) => {
   await dbConnect();
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const user = await User.findOneAndUpdate(
       { email: userEmail },
-      { $inc: { cash: data.payment } },
+      { $inc: { cash: -data.payment } },
       { new: true, session }
     );
     if (!user) {
@@ -31,8 +31,8 @@ export const AddInwardPayment = async (data, userEmail) => {
       await session.abortTransaction();
       return { message: "Insufficient balance or invalid ID" };
     }
-    const inwardPayment = new InwardPayment({ ...data, createdBy: user._id });
-    await inwardPayment.save({ session });
+    const outwardPayment = new OutwardPayment({ ...data, createdBy: user._id });
+    await outwardPayment.save({ session });
     await session.commitTransaction();
     session.endSession();
     return { ok: true, message: "Inward payment added successfully" };
@@ -44,30 +44,30 @@ export const AddInwardPayment = async (data, userEmail) => {
   }
 };
 
-export const GetInwardPayments = async (userEmail) => {
+export const GetOutwardPayments = async (userEmail) => {
   await dbConnect();
   try {
     const user = await User.findOne({ email: userEmail });
     if (!user) {
       return { error: "User not found" };
     }
-    const inwardPayments = await InwardPayment.find({
+    const outwardPayments = await OutwardPayment.find({
       createdBy: user._id,
     }).populate("customerVendorId");
-    return inwardPayments;
+    return outwardPayments;
   } catch (e) {
     console.log(e);
     return { error: "Error fetching inward payments" };
   }
 };
 
-export const GetInwardPaymentById = async (id) => {
+export const GetOutwardPaymentById = async (id) => {
   await dbConnect();
   try {
-    const inwardPayment = await InwardPayment.findById(id).populate(
+    const outwardPayment = await OutwardPayment.findById(id).populate(
       "customerVendorId"
     );
-    return inwardPayment;
+    return outwardPayment;
   } catch (error) {
     console.log(error);
     return { error: "Error fetching outward payment" };

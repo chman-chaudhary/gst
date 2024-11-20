@@ -37,7 +37,6 @@ export const AddSaleInvoice = async (invoiceData, userEmail) => {
 
     // Save the invoice
     const res = await newInvoice.save();
-    console.log(res);
     if (!res) {
       return { ok: false, message: "Error while add Sale Invoice" };
     }

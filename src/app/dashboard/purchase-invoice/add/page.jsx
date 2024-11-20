@@ -132,7 +132,6 @@ const Page = () => {
     const fetchVendors = async () => {
       try {
         if (session.data) {
-          console.log(session.data.user.email);
           const vendors = await GetVendors(session.data.user.email);
           setVendors(vendors);
         }

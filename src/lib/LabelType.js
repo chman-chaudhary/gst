@@ -71,3 +71,14 @@ export const ProductServicesLabel = {
   sellPriceInclTax: "Selling Price (Including Tax)",
   unitOfMeasurement: "Unit of Measurement",
 };
+
+export const Payment = {
+  companyType: "Company Type",
+  companyName: "Company Name",
+  billingAddress: "Billing Address",
+  gstin: "GSTIN",
+  paymentDate: "Payment Date",
+  payment: "Pay Amount",
+  paymentType: "Payment Type",
+  receiptNo: "Receipt No",
+};
