@@ -1,4 +1,5 @@
 import { GetInwardPayments } from "@/actions/InwardPayment";
+import ImportButton from "@/components/custom/InwardPayment/ImportButton";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -26,11 +27,14 @@ const Page = async () => {
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
         <span className="text-2xl font-semibold">Inward Payments</span>
-        <Link href={"/dashboard/inward-payment/add"}>
-          <Button>
-            <PlusIcon /> Add New
-          </Button>
-        </Link>
+        <span className="flex items-center gap-x-3">
+          <Link href={"/dashboard/inward-payment/add"}>
+            <Button>
+              <PlusIcon /> Add New
+            </Button>
+          </Link>
+          <ImportButton />
+        </span>
       </div>
       <hr />
       <Table>
