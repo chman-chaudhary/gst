@@ -15,7 +15,9 @@ const Dashboard = async () => {
       <h1 className="text-2xl font-semibold">Dashboard Page</h1>
       <div className="py-20 px-10">
         <h2 className="text-lg font-medium">Email: {user.email}</h2>
-        <h2 className="text-lg font-medium">Cash Balance: {user.cash}</h2>
+        <h2 className="text-lg font-medium">
+          Cash Balance: &#8377;&nbsp;{user.cash}
+        </h2>
       </div>
     </div>
   );

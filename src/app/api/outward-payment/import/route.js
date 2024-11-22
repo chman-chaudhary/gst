@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { join } from "path";
+import { mkdir } from "fs/promises";
 import * as XLSX from "xlsx";
 import dbConnect from "@/lib/dbConnect";
 import CustomerVendor from "@/lib/models/CustomerVendor";
-import InwardPayment from "@/lib/models/InwardPayment";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";
+import OutwardPayment from "@/lib/models/OutwardPayment";
 
 export async function POST(request) {
   const session = await mongoose.startSession(); // Start a session for transactions
@@ -131,7 +132,7 @@ export async function POST(request) {
       );
     }
 
-    let collectedCash = 0;
+    let spentCash = 0;
 
     // Prepare data for insertion
     const payments = sheetData.map((row) => {
@@ -142,7 +143,7 @@ export async function POST(request) {
         throw new Error(`Invalid payment amount for receipt ${row.receiptNo}`);
       }
 
-      collectedCash += payment;
+      spentCash += payment;
 
       return {
         receiptNo: row.receiptNo,
@@ -157,19 +158,19 @@ export async function POST(request) {
     // Update user's cash balance
     await User.findOneAndUpdate(
       { email: createdByEmail },
-      { $inc: { cash: collectedCash } },
+      { $inc: { cash: -spentCash } },
       { new: true, session }
     );
 
     // Insert payments into MongoDB
-    await InwardPayment.insertMany(payments, { session });
+    await OutwardPayment.insertMany(payments, { session });
 
     // Commit the transaction
     await session.commitTransaction();
 
     return NextResponse.json({
       message: `Successfully imported ${payments.length} payments`,
-      totalAmount: collectedCash,
+      totalAmount: spentCash,
     });
   } catch (error) {
     await session.abortTransaction(); // Abort the transaction on error
@@ -194,7 +195,7 @@ export async function GET() {
     // Connect to the database
     await dbConnect();
     // Fetch data from MongoDB
-    const payments = await InwardPayment.find()
+    const payments = await OutwardPayment.find()
       .populate("customerVendorId", "email")
       .lean();
 
@@ -214,11 +215,11 @@ export async function GET() {
     // Create a new workbook and add data
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(excelData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "InwardPayments");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "OutwardPayments");
 
     // Directory and file path
     const exportDir = join(process.cwd(), "exports");
-    const filePath = join(exportDir, "InwardPayments.xlsx");
+    const filePath = join(exportDir, "OutwardPayments.xlsx");
 
     // Ensure the directory exists
     await mkdir(exportDir, { recursive: true });
@@ -232,11 +233,11 @@ export async function GET() {
       headers: {
         "Content-Type":
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "Content-Disposition": `attachment; filename="InwardPayments.xlsx"`,
+        "Content-Disposition": `attachment; filename="OutwardPayments.xlsx"`,
       },
     });
   } catch (error) {
-    console.error("Error exporting inward payments:", error);
+    console.error("Error exporting outward payments:", error);
     return new Response(`Error: ${error.message}`, { status: 500 });
   }
 }

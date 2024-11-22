@@ -52,9 +52,10 @@ export const InvoiceList = ({ invoices }) => {
                     {new Date(invoice.invoiceDetails.date).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-center text-base">
-                    {invoice.totals.grandTotal}
+                    &#8377;&nbsp;{invoice.totals.grandTotal}
                   </TableCell>
                   <TableCell className="text-center text-base">
+                    &#8377;&nbsp;
                     {invoice.totals?.grandTotal - invoice.totals?.payment || 0}
                   </TableCell>
                   <TableCell className="text-center text-base">

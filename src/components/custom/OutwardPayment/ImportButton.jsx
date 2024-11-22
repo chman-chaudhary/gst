@@ -24,7 +24,7 @@ const ImportButton = () => {
     formData.append("file", file);
     formData.append("createdByEmail", session.data.user.email);
 
-    const res = await fetch("/api/inward-payment/import", {
+    const res = await fetch("/api/outward-payment/import", {
       method: "POST",
       body: formData,
     });

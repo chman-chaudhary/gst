@@ -1,4 +1,6 @@
 import { GetOutwardPayments } from "@/actions/OutwardPayment";
+import ExportButton from "@/components/custom/OutwardPayment/ExportButton";
+import ImportButton from "@/components/custom/OutwardPayment/ImportButton";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -26,11 +28,15 @@ const Page = async () => {
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
         <span className="text-2xl font-semibold">Outward Payments</span>
-        <Link href={"/dashboard/outward-payment/add"}>
-          <Button>
-            <PlusIcon /> Add New
-          </Button>
-        </Link>
+        <span className="flex items-center gap-x-3">
+          <Link href={"/dashboard/outward-payment/add"}>
+            <Button>
+              <PlusIcon /> Add New
+            </Button>
+          </Link>
+          <ImportButton />
+          <ExportButton />
+        </span>
       </div>
       <hr />
       <Table>
@@ -72,6 +78,7 @@ const Page = async () => {
                   {op.paymentType}
                 </TableCell>
                 <TableCell className="text-center text-base">
+                  &#8377;&nbsp;
                   {op.payment}
                 </TableCell>
               </TableRow>

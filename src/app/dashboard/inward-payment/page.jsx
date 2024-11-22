@@ -1,4 +1,5 @@
 import { GetInwardPayments } from "@/actions/InwardPayment";
+import ExportButton from "@/components/custom/InwardPayment/ExportButton";
 import ImportButton from "@/components/custom/InwardPayment/ImportButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +35,7 @@ const Page = async () => {
             </Button>
           </Link>
           <ImportButton />
+          <ExportButton />
         </span>
       </div>
       <hr />
@@ -76,7 +78,7 @@ const Page = async () => {
                   {ip.paymentType}
                 </TableCell>
                 <TableCell className="text-center text-base">
-                  {ip.payment}
+                  &#8377;&nbsp;{ip.payment}
                 </TableCell>
               </TableRow>
             </Link>

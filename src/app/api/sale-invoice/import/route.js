@@ -1,17 +1,18 @@
+// pages/api/invoices.js
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { join } from "path";
+import { mkdir } from "fs/promises";
 import * as XLSX from "xlsx";
 import dbConnect from "@/lib/dbConnect";
 import CustomerVendor from "@/lib/models/CustomerVendor";
-import InwardPayment from "@/lib/models/InwardPayment";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";
+import Invoice from "@/lib/models/Invoice";
 
 export async function POST(request) {
-  const session = await mongoose.startSession(); // Start a session for transactions
+  const session = await mongoose.startSession();
   try {
-    // Handle file upload
     const formData = await request.formData();
     const file = formData.get("file");
     const createdByEmail = formData.get("createdByEmail");
@@ -22,24 +23,23 @@ export async function POST(request) {
 
     if (!createdByEmail) {
       return NextResponse.json(
-        { error: "User email is required" },
+        { error: "User  email is required" },
         { status: 400 }
       );
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadDir = join(process.cwd(), "uploads");
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (error) {
-      // Directory might already exist, continue
+    if (isNaN(paymentAmount) || paymentAmount < 0) {
+      return NextResponse.json(
+        { error: "Invalid payment amount" },
+        { status: 400 }
+      );
     }
 
-    // Process file buffer
+    const uploadDir = join(process.cwd(), "uploads");
+    await mkdir(uploadDir, { recursive: true });
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-
-    // Parse Excel data
     const workbook = XLSX.read(buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
 
@@ -59,19 +59,14 @@ export async function POST(request) {
       );
     }
 
-    // Connect to database
     await dbConnect();
-
-    // Start transaction
     session.startTransaction();
 
-    // Validate required fields
     const requiredFields = [
-      "customerVendorEmail",
-      "receiptNo",
-      "paymentDate",
-      "payment",
-      "paymentType",
+      "customerEmail",
+      "invoiceNumber",
+      "invoiceDate",
+      "total",
     ];
     for (const row of sheetData) {
       const missingFields = requiredFields.filter((field) => !row[field]);
@@ -87,32 +82,27 @@ export async function POST(request) {
       }
     }
 
-    // Get all unique customer vendor emails
     const uniqueEmails = [
-      ...new Set(sheetData.map((row) => row.customerVendorEmail)),
+      ...new Set(sheetData.map((row) => row.customerEmail)),
     ];
-
-    // Resolve customerVendorId and createdBy
-    const customerVendors = await CustomerVendor.find({
+    const customers = await CustomerVendor.find({
       email: { $in: uniqueEmails },
     })
       .session(session)
       .lean();
-
-    const customerVendorMap = customerVendors.reduce((map, vendor) => {
+    const customerMap = customers.reduce((map, vendor) => {
       map[vendor.email] = vendor._id;
       return map;
     }, {});
 
-    // Check if all customer vendors exist
-    const missingVendors = uniqueEmails.filter(
-      (email) => !customerVendorMap[email]
+    const missingCustomers = uniqueEmails.filter(
+      (email) => !customerMap[email]
     );
-    if (missingVendors.length > 0) {
+    if (missingCustomers.length > 0) {
       await session.abortTransaction();
       return NextResponse.json(
         {
-          error: `Customer/Vendor not found for emails: ${missingVendors.join(
+          error: `Customer not found for emails: ${missingCustomers.join(
             ", "
           )}`,
         },
@@ -131,49 +121,66 @@ export async function POST(request) {
       );
     }
 
-    let collectedCash = 0;
-
-    // Prepare data for insertion
-    const payments = sheetData.map((row) => {
-      const customerVendorId = customerVendorMap[row.customerVendorEmail];
-      const payment = Number(row.payment);
-
-      if (isNaN(payment)) {
-        throw new Error(`Invalid payment amount for receipt ${row.receiptNo}`);
-      }
-
-      collectedCash += payment;
-
+    const invoices = sheetData.map((row) => {
+      const customerId = customerMap[row.customerEmail];
       return {
-        receiptNo: row.receiptNo,
-        customerVendorId,
-        paymentDate: new Date(row.paymentDate),
-        payment: payment,
-        paymentType: row.paymentType,
+        customerInfo: {
+          customerId,
+          contactPerson: row.contactPerson,
+          phone: row.phone,
+          gstPan: row.gstPan,
+          placeOfSupply: row.placeOfSupply,
+        },
+        invoiceDetails: {
+          type: row.type,
+          number: row.invoiceNumber,
+          date: new Date(row.invoiceDate),
+          challanNo: row.challanNo,
+          challanDate: row.challanDate,
+        },
+        productRows: row.productRows, // Assuming productRows is an array of objects in your Excel
+        totals: {
+          totalTaxable: row.totalTaxable,
+          totalTax: row.totalTax,
+          grandTotal: row.total,
+          payment: row.payment,
+        },
         createdBy: createdByUser._id,
       };
     });
 
-    // Update user's cash balance
-    await User.findOneAndUpdate(
-      { email: createdByEmail },
-      { $inc: { cash: collectedCash } },
-      { new: true, session }
-    );
+    await Invoice.insertMany(invoices, { session });
 
-    // Insert payments into MongoDB
-    await InwardPayment.insertMany(payments, { session });
+    // Update CustomerVendor remainingAmount and User cash
+    for (const invoice of invoices) {
+      const remainingAmount =
+        invoice.totals.grandTotal - invoice.totals.payment;
 
-    // Commit the transaction
+      // Update CustomerVendor remainingAmount if there is any due payment
+      if (remainingAmount > 0) {
+        await CustomerVendor.findByIdAndUpdate(
+          invoice.customerInfo.customerId,
+          { $inc: { remainingAmount: remainingAmount } },
+          { session }
+        );
+      }
+
+      // Update User cash
+      await User.findByIdAndUpdate(
+        createdByUser._id,
+        { $inc: { cash: paymentAmount } },
+        { session }
+      );
+    }
+
     await session.commitTransaction();
 
     return NextResponse.json({
-      message: `Successfully imported ${payments.length} payments`,
-      totalAmount: collectedCash,
+      message: `Successfully imported ${invoices.length} invoices`,
     });
   } catch (error) {
     await session.abortTransaction(); // Abort the transaction on error
-    console.error("Error processing inward payments:", error);
+    console.error("Error processing invoice import:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   } finally {
     session.endSession(); // End the session
@@ -191,52 +198,44 @@ export const config = {
 
 export async function GET() {
   try {
-    // Connect to the database
     await dbConnect();
-    // Fetch data from MongoDB
-    const payments = await InwardPayment.find()
-      .populate("customerVendorId", "email")
+    const invoices = await Invoice.find()
+      .populate("customerInfo.customerId", "email")
       .lean();
 
-    if (payments.length === 0) {
+    if (invoices.length === 0) {
       return new Response("No data found to export.", { status: 404 });
     }
 
-    // Transform data for the Excel sheet
-    const excelData = payments.map((payment) => ({
-      ReceiptNo: payment.receiptNo,
-      CustomerVendorEmail: payment.customerVendorId?.email || "N/A",
-      PaymentDate: payment.paymentDate.toISOString().split("T")[0],
-      Payment: payment.payment,
-      PaymentType: payment.paymentType,
+    const excelData = invoices.map((invoice) => ({
+      InvoiceNumber: invoice.invoiceDetails.number,
+      CustomerEmail: invoice.customerInfo.customerId?.email || "N/A",
+      InvoiceDate: invoice.invoiceDetails.date.toISOString().split("T")[0],
+      Total: invoice.totals.grandTotal,
+      Payment: invoice.totals.payment, // Include payment in the export
     }));
 
-    // Create a new workbook and add data
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(excelData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "InwardPayments");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Invoices");
 
-    // Directory and file path
     const exportDir = join(process.cwd(), "exports");
-    const filePath = join(exportDir, "InwardPayments.xlsx");
+    const filePath = join(exportDir, "Invoices.xlsx");
 
-    // Ensure the directory exists
     await mkdir(exportDir, { recursive: true });
 
-    // Write the Excel file to the directory
     const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
     await writeFile(filePath, buffer);
 
-    // Return the Excel file to the client
     return new Response(buffer, {
       headers: {
         "Content-Type":
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "Content-Disposition": `attachment; filename="InwardPayments.xlsx"`,
+        "Content-Disposition": `attachment; filename="Invoices.xlsx"`,
       },
     });
   } catch (error) {
-    console.error("Error exporting inward payments:", error);
+    console.error("Error exporting invoices:", error);
     return new Response(`Error: ${error.message}`, { status: 500 });
   }
 }
