@@ -32,8 +32,7 @@ export const InvoiceList = ({ invoices }) => {
           {invoices.map((invoice, index) => {
             return (
               <Link
-                // href={`/dashboard/sale-invoice/view/${invoice._id}`}
-                href={"#"}
+                href={`/dashboard/sale-invoice/view/${invoice._id}`}
                 key={index}
                 className="cursor-pointer"
                 legacyBehavior
@@ -52,7 +51,7 @@ export const InvoiceList = ({ invoices }) => {
                     {new Date(invoice.invoiceDetails.date).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-center text-base">
-                    &#8377;&nbsp; {invoice.totals.grandTotal}
+                    &#8377;&nbsp;{invoice.totals.grandTotal}
                   </TableCell>
                   <TableCell className="text-center text-base">
                     &#8377;&nbsp;

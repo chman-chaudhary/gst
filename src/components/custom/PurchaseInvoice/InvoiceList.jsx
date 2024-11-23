@@ -32,8 +32,7 @@ export const InvoiceList = ({ invoices }) => {
           {invoices.map((invoice, index) => {
             return (
               <Link
-                // href={`/dashboard/sale-invoice/view/${invoice._id}`}
-                href={"#"}
+                href={`/dashboard/purchase-invoice/view/${invoice._id}`}
                 key={index}
                 className="cursor-pointer"
                 legacyBehavior

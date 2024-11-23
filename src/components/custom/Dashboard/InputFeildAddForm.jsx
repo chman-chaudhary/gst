@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
+"use client";
 
+import { cn } from "@/lib/utils";
 const { Button } = require("@/components/ui/button");
 const { Calendar } = require("@/components/ui/calendar");
 const { Label } = require("@/components/ui/label");

@@ -12,11 +12,13 @@ import {
   Users,
   CreditCard,
   PackageCheck,
+  User,
 } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -30,6 +32,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 // Menu items.
 const navlinks = [
@@ -50,7 +54,6 @@ const navlinks = [
   },
   {
     title: "Payments",
-    url: "#",
     icon: HandCoins,
     items: [
       {
@@ -67,7 +70,6 @@ const navlinks = [
   },
   {
     title: "Invoices",
-    url: "#",
     icon: Scroll,
     items: [
       {
@@ -94,12 +96,61 @@ const navlinks = [
   },
   {
     title: "Report",
-    url: "#",
     icon: Newspaper,
+    items: [
+      {
+        title: "Sales Report",
+        url: "#",
+        icon: PackageCheck,
+      },
+      {
+        title: "Purchase Report",
+        url: "#",
+        icon: CreditCard,
+      },
+      {
+        title: "Expense Report",
+        url: "#",
+        icon: PackageCheck,
+      },
+      {
+        title: "Income Report",
+        url: "#",
+        icon: CreditCard,
+      },
+      {
+        title: "Inventory Report",
+        url: "#",
+        icon: CreditCard,
+      },
+      {
+        title: "Profit & Loss account",
+        url: "#",
+        icon: CreditCard,
+      },
+      {
+        title: "Balance Sheet",
+        url: "#",
+        icon: CreditCard,
+      },
+      {
+        title: "Sundry debtors",
+        url: "#",
+        icon: CreditCard,
+      },
+      {
+        title: "Sundry Creditors",
+        url: "#",
+        icon: CreditCard,
+      },
+    ],
   },
 ];
 
-export function DashboardSidebar() {
+export async function DashboardSidebar() {
+  const session = await getServerSession();
+  if (!session) redirect("/login");
+
   return (
     <Sidebar className="pt-12">
       <SidebarContent>
@@ -167,6 +218,11 @@ export function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <span className="flex py-3 gap-x-5 items-end px-2 font-semibold">
+          <User /> {session.user.email}
+        </span>
+      </SidebarFooter>
     </Sidebar>
   );
 }

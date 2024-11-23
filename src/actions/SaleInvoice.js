@@ -74,7 +74,10 @@ export const getSaleInvoiceById = async (id) => {
   await dbConnect();
   try {
     // Find invoice
-    const invoice = await Invoice.findById(id);
+    const invoice = await Invoice.findById(id).populate({
+      path: "customerInfo.customerId",
+      model: "CustomerVendor",
+    });
     if (!invoice) {
       return { ok: false, message: "Invoice not found" };
     }

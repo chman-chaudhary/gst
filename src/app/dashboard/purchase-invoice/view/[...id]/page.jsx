@@ -1,14 +1,14 @@
-import { getSaleInvoiceById } from "@/actions/SaleInvoice";
-import ViewSaleInvoiceDetails from "@/components/custom/SaleInvoice/ViewInvoice";
+import { getPurchaseInvoiceById } from "@/actions/PurchaseInvoice";
+import ViewPurchaseInvoiceDetails from "@/components/custom/PurchaseInvoice/ViewInvoice";
 
 const Page = async ({ params }) => {
   const { id } = await params;
-  const response = await getSaleInvoiceById(id[0]);
+  const response = await getPurchaseInvoiceById(id[0]);
   const invoice = JSON.parse(JSON.stringify(response.invoice));
 
   return (
-    <ViewSaleInvoiceDetails
-      customerInfo={invoice.customerInfo}
+    <ViewPurchaseInvoiceDetails
+      vendorInfo={invoice.vendorInfo}
       additionalDetails={invoice.additionalDetails}
       invoiceDetails={invoice.invoiceDetails}
       totals={invoice.totals}

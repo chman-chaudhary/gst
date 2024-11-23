@@ -68,3 +68,24 @@ export const GetPurchaseInvoices = async (userEmail) => {
     return { ok: false, message: "Error while fetching sale invoices" };
   }
 };
+
+export const getPurchaseInvoiceById = async (id) => {
+  await dbConnect();
+  try {
+    // Find invoice
+    const invoice = await PurchaseInvoice.findById(id).populate({
+      path: "vendorInfo.vendorId",
+      model: "CustomerVendor",
+    });
+    if (!invoice) {
+      return { ok: false, message: "Purchase Invoice not found" };
+    }
+    return {
+      ok: true,
+      invoice,
+    };
+  } catch (error) {
+    console.log(error);
+    return { ok: false, message: "Purchase Invoice not found" };
+  }
+};
