@@ -18,7 +18,7 @@ export const AlertAddBox = ({ open, setOpen, handleAccept }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are You Sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            You're about to delete this item. This action is permanent and
+            You&apos;re about to delete this item. This action is permanent and
             cannot be undone. Do you wish to proceed?
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -47,7 +47,7 @@ export const AlertDeleteBox = ({ open, setOpen, handleDelete }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are You Sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            You're about to delete this item. This action is permanent and
+            You&apos;re about to delete this item. This action is permanent and
             cannot be undone. Do you wish to proceed?
           </AlertDialogDescription>
         </AlertDialogHeader>

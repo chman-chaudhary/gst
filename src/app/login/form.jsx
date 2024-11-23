@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -136,7 +137,7 @@ export default function LoginForm() {
       </CardContent>
       <CardFooter>
         <CardDescription className="flex justify-center w-full gap-x-1">
-          Don't have an account?
+          Don&apos;t have an account?
           <Link href={"/register"} className="text-primary hover:underline">
             Sign Up
           </Link>
