@@ -100,7 +100,7 @@ const navlinks = [
     items: [
       {
         title: "Sales Report",
-        url: "#",
+        url: "/dashboard/reports/sales",
         icon: PackageCheck,
       },
       {
