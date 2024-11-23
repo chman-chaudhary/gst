@@ -182,7 +182,7 @@ export async function POST(request) {
 }
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 300; // 5 minutes timeout
+export const maxDuration = 60; // 5 minutes timeout
 
 export const config = {
   api: {
