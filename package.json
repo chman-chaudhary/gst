@@ -37,15 +37,19 @@
     "mongodb": "^6.10.0",
     "mongoose": "^8.8.2",
     "multer": "^1.4.5-lts.1",
-    "next": "15.0.2",
+    "next": "^15.0.3",
     "next-auth": "^4.24.10",
     "next-connect": "^1.0.0",
     "prisma": "^5.22.0",
     "puppeteer": "^23.8.0",
+<<<<<<< HEAD
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-country-state-city": "^1.1.7",
+=======
+    "react": "^18.3.1",
+>>>>>>> 749c782c6a00bbb8f7b0e2c432bdd6b9769521f7
     "react-day-picker": "^8.10.1",
-    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
     "react-icons": "^5.3.0",
     "tailwind-merge": "^2.5.4",
