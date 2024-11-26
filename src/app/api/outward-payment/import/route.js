@@ -4,7 +4,7 @@ import { join } from "path";
 import { mkdir } from "fs/promises";
 import * as XLSX from "xlsx";
 import dbConnect from "@/lib/dbConnect";
-import CustomerVendor from "@/lib/models/CustomerVendor";
+import CustomerVendor from "@/lib/models/Leager";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";
 import OutwardPayment from "@/lib/models/OutwardPayment";

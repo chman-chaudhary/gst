@@ -31,7 +31,7 @@ import { IconLeft } from "react-day-picker";
 import { AddSaleInvoice } from "@/actions/SaleInvoice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { GetVendors } from "@/actions/CustomerVendor";
+import { GetVendors } from "@/actions/Leagers";
 import InputField from "@/components/custom/Dashboard/InputFeildAddForm";
 import { AddPurchaseInvoice } from "@/actions/PurchaseInvoice";
 import { useToast } from "@/hooks/use-toast";

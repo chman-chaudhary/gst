@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import CustomerVendor from "@/lib/models/CustomerVendor";
+import CustomerVendor from "@/lib/models/Leager";
 import PurchaseInvoice from "@/lib/models/PurchaseInvoice";
 import User from "@/lib/models/User";
 

@@ -1,4 +1,4 @@
-import { GetVendors } from "@/actions/CustomerVendor";
+import { GetVendors } from "@/actions/Leagers";
 import AddForm from "@/components/custom/OutwardPayment/AddForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

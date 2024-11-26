@@ -1,4 +1,4 @@
-import { getCustomerVendorById } from "@/actions/CustomerVendor";
+import { getCustomerVendorById } from "@/actions/Leagers";
 import DeleteButton from "@/components/custom/CustomerVendor/DeleteButton";
 import { InputField } from "@/components/custom/InputFeild";
 import { Button } from "@/components/ui/button";

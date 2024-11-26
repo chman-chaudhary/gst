@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCustomerVendor } from "@/actions/CustomerVendor";
+import { deleteCustomerVendor } from "@/actions/Leagers";
 import { Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

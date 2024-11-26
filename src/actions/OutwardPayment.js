@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import CustomerVendor from "@/lib/models/CustomerVendor";
+import CustomerVendor from "@/lib/models/Leager";
 import OutwardPayment from "@/lib/models/OutwardPayment";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";

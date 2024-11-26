@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../../ui/button";
-import { getCustomerVendors } from "@/actions/CustomerVendor";
+import { getCustomerVendors } from "@/actions/Leagers";
 import {
   Table,
   TableBody,
@@ -29,7 +29,7 @@ const CustomerVendor = async () => {
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
         <span className="text-2xl font-semibold">Customer / Vendor</span>
-        <Link href={"/dashboard/customer-vendor/add"}>
+        <Link href={"/dashboard/leagers/add"}>
           <Button>
             <PlusIcon /> Add New
           </Button>

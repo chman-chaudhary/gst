@@ -43,8 +43,8 @@ const navlinks = [
     icon: Gauge,
   },
   {
-    title: "Customer / Vendor",
-    url: "/dashboard/customer-vendor",
+    title: "Leagers",
+    url: "/dashboard/leagers",
     icon: Users,
   },
   {
@@ -152,7 +152,7 @@ export async function DashboardSidebar() {
   if (!session) redirect("/login");
 
   return (
-    <Sidebar className="pt-12">
+    <Sidebar className="pt-16">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

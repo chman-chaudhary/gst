@@ -3,7 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import * as XLSX from "xlsx";
 import dbConnect from "@/lib/dbConnect";
-import CustomerVendor from "@/lib/models/CustomerVendor";
+import CustomerVendor from "@/lib/models/Leager";
 import InwardPayment from "@/lib/models/InwardPayment";
 import User from "@/lib/models/User";
 import mongoose from "mongoose";

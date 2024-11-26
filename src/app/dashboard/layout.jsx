@@ -6,8 +6,8 @@ const layout = ({ children }) => {
     <div className="w-full">
       <SidebarProvider>
         <DashboardSidebar />
-        <main className="pt-14 w-full">
-          <SidebarTrigger className="fixed" />
+        <main className="w-full">
+          <SidebarTrigger className="fixed mt-[4.2rem]" />
           {children}
         </main>
       </SidebarProvider>

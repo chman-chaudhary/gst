@@ -43,6 +43,7 @@
     "prisma": "^5.22.0",
     "puppeteer": "^23.8.0",
     "react": "19.0.0-rc-02c0e824-20241028",
+    "react-country-state-city": "^1.1.7",
     "react-day-picker": "^8.10.1",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
     "react-hook-form": "^7.53.2",

@@ -36,7 +36,7 @@ import Link from "next/link";
 import { AddSaleInvoice } from "@/actions/SaleInvoice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { getCustomerVendors } from "@/actions/CustomerVendor";
+import { getCustomerVendors } from "@/actions/Leagers";
 import InputField from "@/components/custom/Dashboard/InputFeildAddForm";
 
 // Initial product row structure
