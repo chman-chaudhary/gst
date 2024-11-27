@@ -31,7 +31,7 @@ const NavButtons = [
   },
   {
     label: "Leager",
-    url: "#",
+    url: "/dashboard/leagers",
     color:
       "border-indigo-700 text-indigo-500 hover:bg-indigo-500/60 hover:text-white",
   },
