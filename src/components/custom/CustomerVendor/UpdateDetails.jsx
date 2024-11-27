@@ -1,6 +1,6 @@
 "use client";
 
-import { AddLeager } from "@/actions/Leagers";
+import { updateLeager } from "@/actions/Leagers";
 import RedStar from "@/components/custom/RedStart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,31 +22,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GetCountries, GetState, GetCity } from "react-country-state-city";
 
-const Page = () => {
+const UpdateLeagerPage = ({ leagerInfo }) => {
   const router = useRouter();
   const { toast } = useToast();
   const session = useSession();
 
-  if (!session) {
-    router.push("/login");
-  }
-
-  const [newLeager, setNewLeager] = useState({
-    businessType: "customer",
-    gstin: "",
-    businessName: "",
-    contactPerson: "",
-    contactNo: "",
-    email: "",
-    registrationType: "regular",
-    aadhar: "",
-    address: "",
-    city: "",
-    pincode: "",
-    state: "",
-    country: "",
-  });
-
+  const [leager, setLeager] = useState(leagerInfo);
   const [countryid, setCountryid] = useState(null);
   const [stateid, setStateid] = useState(null);
 
@@ -55,34 +36,48 @@ const Page = () => {
   const [cityList, setCityList] = useState([]);
 
   useEffect(() => {
-    GetCountries().then((result) => {
-      setCountriesList(result);
-    });
+    const fetch = async () => {
+      const countryList = await GetCountries();
+      const country = countryList.find((c) => c.name === leager.country);
+      setCountryid(country.id);
+      setCountriesList(countryList);
+      const stateList = await GetState(country.id);
+      const state = stateList.find((s) => s.name === leager.state);
+      setStateid(state.id);
+      setStateList(stateList);
+      const city = await GetCity(country.id, state.id);
+      setCityList(city);
+    };
+    fetch();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewLeager((prev) => ({ ...prev, [name]: value }));
+    setLeager((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = { ...newLeager };
-    if (!formData.gstin) formData.registrationType = "";
     if (!session.data) {
       return router.push("/login");
     }
+
     try {
-      const data = await AddLeager(formData, session.data?.user.email);
+      const data = await updateLeager(
+        leagerInfo._id,
+        leager,
+        session.data.user.email
+      );
+      console.log(data);
       if (data.success) {
-        toast({ title: "Leager added successfully." });
+        toast({ title: "Leager updated successfully." });
+        router.push("/dashboard/leagers");
       } else {
         toast({ variant: "destructive", title: data.message });
       }
-      router.push("/dashboard/leagers");
     } catch (error) {
-      console.error("Error adding Leager:", error);
-      toast({ variant: "destructive", title: "Error adding Leager" });
+      console.error("Error updating Leager:", error);
+      toast({ variant: "destructive", title: "Error updating Leager" });
     }
   };
 
@@ -90,7 +85,7 @@ const Page = () => {
     <div className="flex justify-center w-full">
       <div className="px-10 pt-4 pb-10 space-y-10 max-w-[800px] w-full">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">Add New Leager</h1>
+          <h1 className="text-xl font-semibold">Edit Leager</h1>
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
@@ -101,9 +96,9 @@ const Page = () => {
             <RadioGroup
               defaultValue="customer"
               className="flex justify-between items-center w-3/4 text-base"
-              value={newLeager.businessType || "customer"}
+              value={leager.businessType || "customer"}
               onValueChange={(value) =>
-                setNewLeager({ ...newLeager, businessType: value })
+                setLeager({ ...leager, businessType: value })
               }
             >
               <span className="flex items-center space-x-2">
@@ -130,7 +125,7 @@ const Page = () => {
           <InputField
             label="Business Name"
             name="businessName"
-            value={newLeager.businessName || ""}
+            value={leager.businessName || ""}
             onChange={handleChange}
             required={true}
             placeholder="Business Name"
@@ -138,7 +133,7 @@ const Page = () => {
           <InputField
             label="Contact Person"
             name="contactPerson"
-            value={newLeager.contactPerson || ""}
+            value={leager.contactPerson || ""}
             onChange={handleChange}
             required={true}
             placeholder="Contact Person"
@@ -147,7 +142,7 @@ const Page = () => {
             label="Contact Number"
             type="tel"
             name="contactNo"
-            value={newLeager.contactNo || ""}
+            value={leager.contactNo || ""}
             onChange={handleChange}
             placeholder="98765XXXXX"
           />
@@ -155,7 +150,7 @@ const Page = () => {
             label="Email"
             type="email"
             name="email"
-            value={newLeager.email || ""}
+            value={leager.email || ""}
             onChange={handleChange}
             required={true}
             placeholder="youremail@gmail.com"
@@ -164,13 +159,13 @@ const Page = () => {
           <InputField
             label="GSTIN"
             name="gstin"
-            value={newLeager.gstin || ""}
+            value={leager.gstin || ""}
             onChange={handleChange}
             placeholder="GST Number"
             className="uppercase"
           />
 
-          {newLeager.gstin && (
+          {leager.gstin && (
             <div className="flex items-center justify-between">
               <Label htmlFor="registrationType" className="w-1/4 text-base">
                 Registration Type
@@ -178,9 +173,9 @@ const Page = () => {
               <RadioGroup
                 defaultValue="regular"
                 className="flex justify-around items-center w-3/4 text-base"
-                value={newLeager.registrationType || "regular"}
+                value={leager.registrationType}
                 onValueChange={(value) =>
-                  setNewLeager({ ...newLeager, registrationType: value })
+                  setLeager({ ...leager, registrationType: value })
                 }
               >
                 <span className="flex items-center space-x-2">
@@ -202,7 +197,7 @@ const Page = () => {
           <InputField
             label="AADHAR"
             name="aadhar"
-            value={newLeager.aadhar || ""}
+            value={leager.aadhar || ""}
             onChange={handleChange}
             required={true}
             placeholder="AADHAR NUMBER"
@@ -213,7 +208,7 @@ const Page = () => {
             type="textarea"
             label="Address"
             name="address"
-            value={newLeager.address || ""}
+            value={leager.address || ""}
             onChange={handleChange}
             required={true}
           />
@@ -228,13 +223,13 @@ const Page = () => {
                 const country = countriesList.find((c) => c.name === value);
                 if (country) {
                   setCountryid(country.id);
-                  setNewLeager((prev) => ({ ...prev, country: country.name }));
+                  setLeager((prev) => ({ ...prev, country: country.name }));
                   GetState(country.id).then((result) => {
                     setStateList(result);
                   });
                 }
               }}
-              value={newLeager.country}
+              value={leager.country}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Country" />
@@ -258,14 +253,14 @@ const Page = () => {
               onValueChange={(value) => {
                 const state = stateList.find((c) => c.name === value);
                 if (state) {
-                  setNewLeager((prev) => ({ ...prev, state: state.name }));
+                  setLeager((prev) => ({ ...prev, state: state.name }));
                   setStateid(state.id);
                   GetCity(countryid, state.id).then((result) => {
                     setCityList(result);
                   });
                 }
               }}
-              value={newLeager.state}
+              value={leager.state}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select State" />
@@ -289,10 +284,10 @@ const Page = () => {
               onValueChange={(value) => {
                 const city = cityList.find((c) => c.name === value);
                 if (city) {
-                  setNewLeager((prev) => ({ ...prev, city: city.name }));
+                  setLeager((prev) => ({ ...prev, city: city.name }));
                 }
               }}
-              value={newLeager.city}
+              value={leager.city}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select City" />
@@ -311,11 +306,10 @@ const Page = () => {
             label="PIN Code"
             name="pincode"
             type="number"
-            value={newLeager.pincode || ""}
+            value={leager.pincode || ""}
             onChange={handleChange}
             required={true}
           />
-
           <div className="flex justify-between items-center">
             <Link href={"/dashboard/leagers"}>
               <Button variant="destructive">
@@ -332,8 +326,9 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default UpdateLeagerPage;
 
+// Reuse InputField component from AddLeager
 const InputField = ({
   value = "",
   name = "",

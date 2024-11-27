@@ -33,7 +33,7 @@ const LeagerSchema = new Schema({
   },
   registrationType: {
     type: String,
-    enum: ["regular", "composite"],
+    enum: ["regular", "composite", ""],
   },
   aadhar: {
     type: String,

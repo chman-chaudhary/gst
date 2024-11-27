@@ -42,12 +42,7 @@
     "next-connect": "^1.0.0",
     "prisma": "^5.22.0",
     "puppeteer": "^23.8.0",
-<<<<<<< HEAD
-    "react": "19.0.0-rc-02c0e824-20241028",
-    "react-country-state-city": "^1.1.7",
-=======
     "react": "^18.3.1",
->>>>>>> 749c782c6a00bbb8f7b0e2c432bdd6b9769521f7
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",

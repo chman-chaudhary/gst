@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCustomerVendor } from "@/actions/Leagers";
+import { deleteLeager } from "@/actions/Leagers";
 import { Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,9 +11,9 @@ const DeleteButton = ({ id }) => {
   const router = useRouter();
 
   const handleDelete = async () => {
-    const res = await deleteCustomerVendor(id);
+    const res = await deleteLeager(id);
     if (res) {
-      router.push("/dashboard/customer-vendor");
+      router.push("/dashboard/leagers");
     }
   };
 

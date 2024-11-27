@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../../ui/button";
-import { getCustomerVendors } from "@/actions/Leagers";
+import { getLeagers } from "@/actions/Leagers";
 import {
   Table,
   TableBody,
@@ -15,9 +15,10 @@ import { getServerSession } from "next-auth";
 
 const CustomerVendor = async () => {
   const session = await getServerSession();
-  const customerVendors = await getCustomerVendors(session.user.email);
+  const leagers = await getLeagers(session.user.email);
+  console.log(leagers);
 
-  if (!customerVendors) {
+  if (!leagers) {
     return (
       <div className="h-screen flex justify-center items-center">
         <h1 className="text-xl">No data found</h1>
@@ -28,7 +29,7 @@ const CustomerVendor = async () => {
   return (
     <div className="px-10 py-5 space-y-5 w-full">
       <div className="flex justify-between items-center">
-        <span className="text-2xl font-semibold">Customer / Vendor</span>
+        <span className="text-2xl font-semibold">Leagers</span>
         <Link href={"/dashboard/leagers/add"}>
           <Button>
             <PlusIcon /> Add New
@@ -36,49 +37,41 @@ const CustomerVendor = async () => {
         </Link>
       </div>
       <hr />
-      {customerVendors.length ? (
+      {leagers.length ? (
         <div className="pt-5">
           <Table className="text-base">
             <TableCaption>A list of your recent invoices.</TableCaption>
             <TableHeader>
               <TableRow>
+                <TableHead className="text-center">S No.</TableHead>
                 <TableHead className="text-center">Name</TableHead>
-                <TableHead className="text-center">
-                  Outstanding Amount
-                </TableHead>
-                <TableHead className="text-center">Phone</TableHead>
+                <TableHead className="text-center">GST</TableHead>
                 <TableHead className="text-center">Type</TableHead>
                 <TableHead className="text-center">State</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {customerVendors.map((cv) => {
+              {leagers.map((leager, index) => {
                 return (
                   <Link
                     legacyBehavior
-                    key={cv._id}
-                    href={`/dashboard/customer-vendor/view/${cv._id}`}
+                    key={leager._id}
+                    href={`/dashboard/leagers/view/${leager._id}`}
                     className="cursor-pointer"
                   >
                     <TableRow>
+                      <TableCell className="text-center">{index + 1}</TableCell>
                       <TableCell className="text-center">
-                        {cv.companyName}
+                        {leager.businessName}
                       </TableCell>
                       <TableCell className="text-center">
-                        &#8377; {cv.remainingAmount}
+                        {leager.gstin ? leager.gstin : "Unregister"}
                       </TableCell>
                       <TableCell className="text-center">
-                        {cv.contactNo}
+                        {leager.gstin ? "B2B" : "B2C"}
                       </TableCell>
                       <TableCell className="text-center">
-                        {cv.companyType === "customer"
-                          ? "Customer"
-                          : cv.companyType === "vendor"
-                          ? "Vendor"
-                          : "Customer/Vendor"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {cv.billingAddress?.state ?? "Uttar Pradesh"}
+                        {leager.state ?? "Haryana"}
                       </TableCell>
                     </TableRow>
                   </Link>
