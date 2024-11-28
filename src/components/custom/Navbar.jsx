@@ -7,25 +7,25 @@ import Image from "next/image";
 const NavButtons = [
   {
     label: "Sales",
-    url: "#",
+    url: "/dashboard/sale-invoice",
     color:
       "border-blue-700 text-blue-500 hover:bg-blue-500/60 hover:text-white",
   },
   {
     label: "Purchase",
-    url: "#",
+    url: "/dashboard/purchase-invoice",
     color:
       "border-orange-700 text-orange-500 hover:bg-orange-500/60 hover:text-white",
   },
   {
     label: "Payment",
-    url: "#",
+    url: "/dashboard/outward-payment",
     color:
       "border-green-700 text-green-500 hover:bg-green-500/60 hover:text-white",
   },
   {
     label: "Receipt",
-    url: "#",
+    url: "/dashboard/inward-payment",
     color:
       "border-yellow-700 text-yellow-500 hover:bg-yellow-500/60 hover:text-white",
   },
