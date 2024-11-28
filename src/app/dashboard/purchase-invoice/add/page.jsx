@@ -28,10 +28,10 @@ import {
 import { FileIcon, PlusIcon, PrinterIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { IconLeft } from "react-day-picker";
-import { AddSaleInvoice } from "@/actions/SaleInvoice";
+// import { AddSaleInvoice } from "@/actions/SaleInvoice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { GetVendors } from "@/actions/Leagers";
+// import { GetVendors } from "@/actions/Leagers";
 import InputField from "@/components/custom/Dashboard/InputFeildAddForm";
 import { AddPurchaseInvoice } from "@/actions/PurchaseInvoice";
 import { useToast } from "@/hooks/use-toast";
@@ -132,8 +132,8 @@ const Page = () => {
     const fetchVendors = async () => {
       try {
         if (session.data) {
-          const vendors = await GetVendors(session.data.user.email);
-          setVendors(vendors);
+          // const vendors = await GetVendors(session.data.user.email);
+          // setVendors(vendors);
         }
       } catch (e) {
         console.log("ERROR! while fetching vendors", e);

@@ -16,7 +16,6 @@ import { getServerSession } from "next-auth";
 const CustomerVendor = async () => {
   const session = await getServerSession();
   const leagers = await getLeagers(session.user.email);
-  console.log(leagers);
 
   if (!leagers) {
     return (

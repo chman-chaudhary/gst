@@ -1,4 +1,4 @@
-import { getCustomerVendors } from "@/actions/Leagers";
+// import { getCustomerVendors } from "@/actions/Leagers";
 import AddForm from "@/components/custom/InwardPayment/AddForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -8,7 +8,7 @@ const Page = async () => {
   if (!session) {
     redirect("/login");
   }
-  const customers = await getCustomerVendors(session.user.email);
+  // const customers = await getCustomerVendors(session.user.email);
 
   return (
     <div className="flex justify-center w-full">
@@ -16,7 +16,7 @@ const Page = async () => {
         <h1 className="text-2xl font-semibold text-center">
           Create Inward Payment
         </h1>
-        <AddForm customers={customers} />
+        {/* <AddForm customers={customers} /> */}
       </div>
     </div>
   );

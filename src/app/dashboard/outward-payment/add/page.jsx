@@ -1,4 +1,4 @@
-import { GetVendors } from "@/actions/Leagers";
+// import { GetVendors } from "@/actions/Leagers";
 import AddForm from "@/components/custom/OutwardPayment/AddForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -8,7 +8,7 @@ const Page = async () => {
   if (!session) {
     redirect("/login");
   }
-  const vendors = await GetVendors(session.user.email);
+  // const vendors = await GetVendors(session.user.email);
 
   return (
     <div className="flex justify-center w-full">
@@ -16,7 +16,7 @@ const Page = async () => {
         <h1 className="text-2xl font-semibold text-center">
           Create Outward Payment
         </h1>
-        <AddForm vendors={vendors} />
+        {/* <AddForm vendors={vendors} /> */}
       </div>
     </div>
   );
